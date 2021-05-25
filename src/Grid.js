@@ -1,12 +1,13 @@
+import React from 'react';
+
 import Paper from '@material-ui/core/Paper';
 
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
+import Table from '@material-ui/core/Table';
 import TableHead from '@material-ui/core/TableHead';
+import TableBody from '@material-ui/core/TableBody';
 import TableRow from '@material-ui/core/TableRow';
-import React from 'react';
+import TableCell from '@material-ui/core/TableCell';
 
 import axios from "axios";
 const API_GET_ITEMS = "https://bimiscwebapi-test.azurewebsites.net/api/misc/getitems/";
@@ -18,31 +19,36 @@ class Grid extends React.Component{
 		numItemsPerPage: 20,
 		pageNum: 1,
 	}
-	
-	componentDidMount(){
-		// Get items via API
-		axios.get(API_GET_ITEMS + this.state.numItemsPerPage + "/" + this.state.pageNum)
-			.then(res => {
-				var newItemsState = [];
-				res.data.data.forEach((item) => {
-					 newItemsState.push({                         
-						 id: item.id,
-						 name: item.name,
-						 createdBy: item.createdBy,
-						 dateCreated: item.dateCreated,
-						 modifiedBy: item.modifiedBy,
-						 dateModified: item.dateModified,
-						 recordStatusId: item.recordStatusId,
-						 recordStatus: item.recordStatus,
-						 createdByUser: item.createdByUser,
-						 modifiedByUser: item.modifiedByUser,
-						 imageUrl: item.imageUrl,
-						 thumbImageUrl: item.thumbImageUrl,
-					 })
-				})
 
-				this.setState({items: newItemsState});
-			})
+    // Update grid items via API
+    updateGrid(numItems, itemPage){
+        axios.get(API_GET_ITEMS + numItems + "/" + itemPage)
+            .then(res => {
+                var newItemsState = [];
+                res.data.data.forEach((item) => {
+                    newItemsState.push({                         
+                        id: item.id,
+                        name: item.name,
+                        createdBy: item.createdBy,
+                        dateCreated: item.dateCreated,
+                        modifiedBy: item.modifiedBy,
+                        dateModified: item.dateModified,
+                        recordStatusId: item.recordStatusId,
+                        recordStatus: item.recordStatus,
+                        createdByUser: item.createdByUser,
+                        modifiedByUser: item.modifiedByUser,
+                        imageUrl: item.imageUrl,
+                        thumbImageUrl: item.thumbImageUrl,
+                    })
+                })
+            
+                this.setState({items: newItemsState});
+            })
+    }
+	
+    // Populate grid with items
+	componentDidMount(){
+        this.updateGrid(this.state.numItemsPerPage, this.state.pageNum);
 	}
 
     render(){
@@ -61,7 +67,7 @@ class Grid extends React.Component{
 							<TableCell>Date Modified</TableCell>
 						</TableRow>
 					</TableHead>
-                    
+
                     {/* TODO Replace with ThumbImageURL */}
 					<TableBody>
 						{this.state.items.map((item) => (
