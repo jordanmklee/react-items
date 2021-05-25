@@ -7,8 +7,6 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import ItemForm from "./ItemForm";
 import Grid from "./Grid";
 
-import axios from "axios";
-const API_GET_ITEMS = "https://bimiscwebapi-test.azurewebsites.net/api/misc/getitems/";
 /*
 const API_SAVE_ITEMS = "https://bimiscwebapi-test.azurewebsites.net/api/misc/saveitems/";
 const API_DELETE_ITEMS = "https://bimiscwebapi-test.azurewebsites.net/api/misc/deleteitem/";
@@ -20,23 +18,6 @@ const API_GET_ITEM = "https://bimiscwebapi-test.azurewebsites.net/api/misc/getit
 */
 
 class App extends React.Component{
-	state = {
-		items: [],
-
-		numItemsPerPage: 20,
-		pageNum: 1,
-	}
-	
-	componentDidMount(){
-		// Get items via API
-		axios.get(API_GET_ITEMS + this.state.numItemsPerPage + "/" + this.state.pageNum)
-			.then(res => {
-				res.data.data.forEach((item) => {
-					console.log(item)
-				})
-			})
-	}
-
 	render(){
 		return(
 			<div>
