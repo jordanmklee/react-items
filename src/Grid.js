@@ -29,6 +29,9 @@ class Grid extends React.Component{
 		totalNumItems: 0,
 		numItemsPerPage: 20,
 		pageNum: 1,
+
+		deleteMode: false,
+		allSelected: "indeterminate",
 	}
 
 	// Update grid items via API
@@ -51,6 +54,8 @@ class Grid extends React.Component{
 						modifiedByUser: item.modifiedByUser,
 						imageUrl: item.imageUrl,
 						thumbImageUrl: item.thumbImageUrl,
+
+						isSelected: false,
 					})
 				})
 			
@@ -64,6 +69,31 @@ class Grid extends React.Component{
 
 	handleEditClick = (event) => {
 		console.log(event);
+	}
+
+	handleSelectAllClick = (event) => {
+		// Set all items' isSelected field to header checkbox value
+		let stateItems = [...this.state.items];
+		stateItems.forEach((item) => {
+			item.isSelected = event.target.checked;
+		})
+
+		// deleteMode will always be enabled when all are selected; and vice-versa
+		this.setState({ items: stateItems, deleteMode: event.target.checked })
+	}
+
+	handleSelectClick = (clickedItem) => {
+		let newDeleteMode = false;
+		
+		let stateItems = [...this.state.items];
+		stateItems.forEach((item) => {
+			if(item.id === clickedItem.id)				// Toggle the clicked item's isSelected field
+				item.isSelected = !item.isSelected;
+			if(item.isSelected)							// At least 1 item selected; enable deleteMode
+				newDeleteMode = true;
+		})
+
+		this.setState({ items: stateItems, deleteMode: newDeleteMode })
 	}
 
 	handleChangePage = (event, newPage) => {
@@ -87,6 +117,7 @@ class Grid extends React.Component{
 		return(
 			<div>
 				<GridButtons
+					deleteMode={this.state.deleteMode}
 					handleDeleteClick={this.handleDeleteClick}
 					handleEditClick={this.handleEditClick}/>
 
@@ -97,7 +128,7 @@ class Grid extends React.Component{
 							<TableHead>
 								<TableRow>
 									<TableCell>
-										<Checkbox/>
+										<Checkbox onClick={this.handleSelectAllClick}/>
 									</TableCell>
 									<TableCell/>
 									<TableCell>ID</TableCell>
@@ -112,30 +143,14 @@ class Grid extends React.Component{
 							</TableHead>
 
 							<TableBody>
+								
 								{this.state.items.map((item) => (
-									<TableRow key={item.id}>
-										<TableCell>
-											<Checkbox/>
-										</TableCell>
-										<TableCell>
-											<Link to={{	pathname: "/form",
-														state: {id: item.id}	}}>
-												<Button variant="contained"><CreateIcon/></Button>
-											</Link>
-										</TableCell>
-										<TableCell>{item.id}</TableCell>
-										{(item.thumbImageUrl !== "")
-										?	(<TableCell><img className="thumbnail" src={item.thumbImageUrl} alt=""/></TableCell>)
-										:	(<TableCell><img className="thumbnailPlaceholder" alt=""/></TableCell>)}
-										<TableCell>{item.name}</TableCell>
-										<TableCell>{item.recordStatus}</TableCell>
-										<TableCell>{item.createdByUser}</TableCell>
-										<TableCell>{item.modifiedByUser}</TableCell>
-										<TableCell>{item.dateCreated}</TableCell>
-										<TableCell>{item.dateModified}</TableCell>
-									</TableRow>
-									)
-								)}
+									<GridItem
+										key={item.id}
+										item={item}
+										onSelectClick={this.handleSelectClick}
+									/>
+								))}
 								
 							</TableBody>
 
@@ -156,6 +171,39 @@ class Grid extends React.Component{
 				</Container>
 			</div>
 		)
+	}
+}
+
+class GridItem extends React.Component{
+	onSelectClick = () => {
+		this.props.onSelectClick(this.props.item);
+	}
+
+	render(){
+		return(
+				<TableRow key={this.props.item.id}>
+					<TableCell>
+						<Checkbox checked={this.props.item.isSelected} onClick={this.onSelectClick}/>
+					</TableCell>
+					<TableCell>
+						<Link to={{	pathname: "/form",
+									state: {id: this.props.item.id}	}}>
+							<Button variant="contained"><CreateIcon/></Button>
+						</Link>
+					</TableCell>
+					<TableCell>{this.props.item.id}</TableCell>
+					{(this.props.item.thumbImageUrl !== "")
+					?	(<TableCell><img className="thumbnail" src={this.props.item.thumbImageUrl} alt=""/></TableCell>)
+					:	(<TableCell><img className="thumbnailPlaceholder" alt=""/></TableCell>)}
+					<TableCell>{this.props.item.name}</TableCell>
+					<TableCell>{this.props.item.recordStatus}</TableCell>
+					<TableCell>{this.props.item.createdByUser}</TableCell>
+					<TableCell>{this.props.item.modifiedByUser}</TableCell>
+					<TableCell>{this.props.item.dateCreated}</TableCell>
+					<TableCell>{this.props.item.dateModified}</TableCell>
+				</TableRow>
+				)
+		
 	}
 }
 

@@ -19,7 +19,11 @@ class GridButtons extends React.Component{
 						<Link to={{	pathname: "/form",
 									state: {id: 0}	}}>
 							<Button variant="contained" color="primary" size="large">Add</Button></Link>
-						<Button variant="contained" color="secondary" size="large" onClick={this.props.handleDeleteClick}>Delete</Button>
+						
+						{(this.props.deleteMode)
+							?	(<Button variant="contained" color="secondary" size="large" onClick={this.props.handleDeleteClick}>Delete</Button>)
+							:	(<Button variant="contained" color="secondary" size="large" disabled>Delete</Button>)}
+						
 						<Button variant="contained" size="large" onClick={this.props.handleEditClick}>Edit</Button>
 					</div>
 				</Paper>
