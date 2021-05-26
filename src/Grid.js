@@ -64,10 +64,12 @@ class Grid extends React.Component{
 	}
 
 	handleDeleteClick = (event) => {
+		// TODO
 		console.log(event);
 	}
 
 	handleEditClick = (event) => {
+		// TODO
 		console.log(event);
 	}
 

@@ -40,8 +40,22 @@ class ItemForm extends React.Component{
 		pictures: [],
 	}
 	
+	handleNameChange = (event) => {
+		this.setState({ name: event.target.value })
+	}
+
 	handleRecordStatusIdChange = (event) => {
 		this.setState({ recordStatusId: event.target.value })
+	}
+
+	handleNewPictureClick = (event) => {
+		// TODO Add new picture functionality
+		console.log("Adding new picture")
+	}
+
+	handleSaveClick = (event) => {
+		// TODO Save button functionality
+		console.log("Saving changes")
 	}
 
 	componentDidMount(){
@@ -88,7 +102,7 @@ class ItemForm extends React.Component{
 					
 						
 					<div className="inputContainer">
-						<TextField label="Name" value={this.state.name} variant="outlined" fullWidth></TextField>
+						<TextField label="Name" value={this.state.name} variant="outlined" fullWidth onChange={this.handleNameChange}></TextField>
 					</div>
 
 					<div className="inputContainer">
@@ -112,14 +126,25 @@ class ItemForm extends React.Component{
 							<img className="thumbnail" key={image.id} src={image.thumbImageUrl} alt=""/>
 						))}
 						<div className="inputContainer">
-							<Button variant="outlined" size="small"><AddIcon/></Button>
+							<Button
+								variant="outlined"
+								size="small"
+								onClick={this.handleNewPictureClick}>
+								<AddIcon/></Button>
 						</div>
 					</div>
 
 					<div className="inputContainer">
 						<div className="buttonContainer">
-							<Link to="/"><Button variant="contained">Back</Button></Link>
-							<Button variant="contained" color="primary">Save</Button>
+							<Link to="/">
+								<Button variant="contained">Back</Button>
+							</Link>
+							<Button
+								variant="contained"
+								color="primary"
+								onClick={this.handleSaveClick}>
+								Save
+							</Button>
 						</div>
 					</div>
 				</div>
