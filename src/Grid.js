@@ -73,7 +73,7 @@ class Grid extends React.Component{
 		return(
 			<div>
 				<GridButtons/>
-				
+
 				{/* TODO Hardcoded padding for bottom */}
 				<Container style={{paddingBottom: "100px"}}>
 					<TableContainer component={Paper}>
@@ -91,12 +91,13 @@ class Grid extends React.Component{
 								</TableRow>
 							</TableHead>
 
-							{/* TODO Replace with ThumbImageURL */}
 							<TableBody>
 								{this.state.items.map((item) => (
 									<TableRow key={item.id}>
 										<TableCell>{item.id}</TableCell>
-										<TableCell>{item.id}</TableCell>
+										{(item.thumbImageUrl !== "")
+										?	(<TableCell><img className="thumbnail" src={item.thumbImageUrl} alt=""/></TableCell>)
+										:	(<TableCell><img className="thumbnailPlaceholder" alt=""/></TableCell>)}
 										<TableCell>{item.name}</TableCell>
 										<TableCell>{item.recordStatus}</TableCell>
 										<TableCell>{item.createdBy}</TableCell>
