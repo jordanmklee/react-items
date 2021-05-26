@@ -18,13 +18,18 @@ class GridButtons extends React.Component{
 					<div className="buttonContainer" style={{float: "right"}}>
 						<Link to={{	pathname: "/form",
 									state: {id: 0}	}}>
-							<Button variant="contained" color="primary" size="large">Add</Button></Link>
+							<Button variant="contained" color="primary" size="large">Add</Button>
+						</Link>
 						
 						{(this.props.deleteMode)
 							?	(<Button variant="contained" color="secondary" size="large" onClick={this.props.handleDeleteClick}>Delete</Button>)
 							:	(<Button variant="contained" color="secondary" size="large" disabled>Delete</Button>)}
 						
-						<Button variant="contained" size="large" onClick={this.props.handleEditClick}>Edit</Button>
+
+						{(this.props.editMode)
+							?	(<Button variant="contained" size="large" color="primary" onClick={this.props.handleEditClick}>Save</Button>)
+							:	(<Button variant="contained" size="large" onClick={this.props.handleEditClick}>Edit</Button>)}
+						
 					</div>
 				</Paper>
 			</Container>

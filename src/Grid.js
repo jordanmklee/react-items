@@ -17,6 +17,10 @@ import TableCell from '@material-ui/core/TableCell';
 import TableFooter from '@material-ui/core/TableFooter';
 import TablePagination from '@material-ui/core/TablePagination';
 
+import TextField from '@material-ui/core/TextField';
+import Select from "@material-ui/core/Select";
+import MenuItem from '@material-ui/core/MenuItem';
+
 import { Link } from "react-router-dom";
 
 import axios from "axios";
@@ -31,6 +35,7 @@ class Grid extends React.Component{
 		pageNum: 1,
 
 		deleteMode: false,
+		editMode: false,
 		allSelected: false,
 	}
 
@@ -63,6 +68,7 @@ class Grid extends React.Component{
 			})
 	}
 
+	// Delete selected items
 	handleDeleteClick = (event) => {
 		let notSelected = [];
 		this.state.items.forEach((item) => {
@@ -74,6 +80,7 @@ class Grid extends React.Component{
 				notSelected.push(item);
 		})
 
+		// TODO Pagination does not update on delete
 		// After delete, reset deleteMode and checkboxes
 		this.setState({ items: notSelected,
 						deleteMode: false,
@@ -81,8 +88,12 @@ class Grid extends React.Component{
 	}
 
 	handleEditClick = (event) => {
-		// TODO
-		console.log(event);
+		if(this.state.editMode){
+			// TODO API call to save changes
+			console.log("Saving changes...")
+		}
+
+		this.setState({ editMode: !this.state.editMode })
 	}
 
 	handleSelectAllClick = (event) => {
@@ -134,6 +145,7 @@ class Grid extends React.Component{
 			<div>
 				<GridButtons
 					deleteMode={this.state.deleteMode}
+					editMode={this.state.editMode}
 					handleDeleteClick={this.handleDeleteClick}
 					handleEditClick={this.handleEditClick}/>
 
@@ -159,15 +171,14 @@ class Grid extends React.Component{
 							</TableHead>
 
 							<TableBody>
-								
 								{this.state.items.map((item) => (
 									<GridItem
 										key={item.id}
 										item={item}
 										onSelectClick={this.handleSelectClick}
+										editMode={this.state.editMode}
 									/>
 								))}
-								
 							</TableBody>
 
 							<TableFooter>
@@ -209,10 +220,26 @@ class GridItem extends React.Component{
 					</TableCell>
 					<TableCell>{this.props.item.id}</TableCell>
 					{(this.props.item.thumbImageUrl !== "")
-					?	(<TableCell><img className="thumbnail" src={this.props.item.thumbImageUrl} alt=""/></TableCell>)
-					:	(<TableCell><img className="thumbnailPlaceholder" alt=""/></TableCell>)}
-					<TableCell>{this.props.item.name}</TableCell>
-					<TableCell>{this.props.item.recordStatus}</TableCell>
+						?	(<TableCell><img className="thumbnail" src={this.props.item.thumbImageUrl} alt=""/></TableCell>)
+						:	(<TableCell><img className="thumbnailPlaceholder" alt=""/></TableCell>)}
+					
+					{(this.props.editMode)
+						?	(<TableCell>
+								<TextField variant="outlined" value={this.props.item.name}/>
+							</TableCell>)
+						:	(<TableCell>{this.props.item.name}</TableCell>)}
+					
+					{/* TODO Populate dropdown with API values */}
+					{(this.props.editMode)
+						?	(<TableCell>
+								<Select variant="outlined" fullWidth value={this.props.item.recordStatusId}>
+									<MenuItem value={1}>New</MenuItem>
+									<MenuItem value={2}>Visible</MenuItem>
+									<MenuItem value={3}>Not Visible</MenuItem>
+								</Select>
+							</TableCell>)
+						:	(<TableCell>{this.props.item.recordStatus}</TableCell>)}
+					
 					<TableCell>{this.props.item.createdByUser}</TableCell>
 					<TableCell>{this.props.item.modifiedByUser}</TableCell>
 					<TableCell>{this.props.item.dateCreated}</TableCell>
