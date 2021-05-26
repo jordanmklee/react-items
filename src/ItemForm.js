@@ -43,36 +43,29 @@ class ItemForm extends React.Component{
 	}
 
 	componentDidMount(){
-		// Load Record Status dropdown values via API
-		axios.get(API_GET_RECORD_STATUS_LIST)
-			.then(res => {
-				this.setState({ recordStatusList: res.data.data })
+		// Load Record Status dropdown values, existing values for item, pictures via API
+		axios.all([
+			axios.get(API_GET_RECORD_STATUS_LIST),
+			axios.get(API_GET_ITEM + this.props.location.state.id),
+			axios.get(API_GET_ITEM_PICTURES + this.props.location.state.id)
+		])
+		.then(axios.spread((recordStatusRes, itemRes, pictureRes) => {
+			// Parse picture response into array of URL/thumbnail URLs
+			let imgs = [];
+			pictureRes.data.data.forEach((img) => {
+				imgs.push({	id: img.id,
+							imageUrl: img.imageUrl,
+							thumbImageUrl: img.thumbImageUrl	})
 			})
 
-		// Load existing values for item via API
-		axios.get(API_GET_ITEM + this.props.location.state.id)
-			.then(res => {
-				let data = res.data.data;
-				this.setState({
-					id: this.props.location.state.id,
-					name: data.name,
-					recordStatusId: data.recordStatusId,
-				})
-			})
-		
-		// Load pictures for currently edited item via API
-		axios.get(API_GET_ITEM_PICTURES + this.props.location.state.id)
-			.then(res => {
-				let data = res.data.data;
-				let imgs = [];
-				data.forEach((img) => {
-					imgs.push({	id: img.id,
-								imageUrl: img.imageUrl,
-								thumbImageUrl: img.thumbImageUrl	})
-				})
+			this.setState({	recordStatusList: recordStatusRes.data.data,
+							
+							id: itemRes.data.data.id,
+							name: itemRes.data.data.name,
+							recordStatusId: itemRes.data.data.recordStatusId,
 
-				this.setState({ pictures: imgs })
-			})
+							pictures: imgs })
+		}))
 	}
 	
 	render(){
