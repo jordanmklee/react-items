@@ -31,7 +31,7 @@ class Grid extends React.Component{
 		pageNum: 1,
 
 		deleteMode: false,
-		allSelected: "indeterminate",
+		allSelected: false,
 	}
 
 	// Update grid items via API
@@ -64,8 +64,20 @@ class Grid extends React.Component{
 	}
 
 	handleDeleteClick = (event) => {
-		// TODO
-		console.log(event);
+		let notSelected = [];
+		this.state.items.forEach((item) => {
+			if(item.isSelected){
+				// TODO API call
+				console.log("deleting " + item.id)
+			}
+			else
+				notSelected.push(item);
+		})
+
+		// After delete, reset deleteMode and checkboxes
+		this.setState({ items: notSelected,
+						deleteMode: false,
+						allSelected: false })
 	}
 
 	handleEditClick = (event) => {
@@ -81,7 +93,9 @@ class Grid extends React.Component{
 		})
 
 		// deleteMode will always be enabled when all are selected; and vice-versa
-		this.setState({ items: stateItems, deleteMode: event.target.checked })
+		this.setState({ items: stateItems,
+						allSelected: event.target.checked,			
+						deleteMode: event.target.checked	})
 	}
 
 	handleSelectClick = (clickedItem) => {
@@ -130,7 +144,7 @@ class Grid extends React.Component{
 							<TableHead>
 								<TableRow>
 									<TableCell>
-										<Checkbox onClick={this.handleSelectAllClick}/>
+										<Checkbox checked={this.state.allSelected} onClick={this.handleSelectAllClick}/>
 									</TableCell>
 									<TableCell/>
 									<TableCell>ID</TableCell>
