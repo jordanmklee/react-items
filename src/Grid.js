@@ -3,9 +3,11 @@ import GridButtons from "./GridButtons"
 
 import Paper from '@material-ui/core/Paper';
 import Container from '@material-ui/core/Container';
+
 import Checkbox from '@material-ui/core/Checkbox';
 import Button from '@material-ui/core/Button';
 import CreateIcon from '@material-ui/icons/Create';
+
 import TableContainer from '@material-ui/core/TableContainer';
 import Table from '@material-ui/core/Table';
 import TableHead from '@material-ui/core/TableHead';
@@ -14,6 +16,8 @@ import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
 import TableFooter from '@material-ui/core/TableFooter';
 import TablePagination from '@material-ui/core/TablePagination';
+
+import { Link } from "react-router-dom";
 
 import axios from "axios";
 const API_GET_ITEMS = "https://bimiscwebapi-test.azurewebsites.net/api/misc/getitems/";
@@ -104,7 +108,10 @@ class Grid extends React.Component{
 											<Checkbox/>
 										</TableCell>
 										<TableCell>
-											<Button variant="contained"><CreateIcon/></Button>
+											<Link to={{	pathname: "/form",
+														state: {id: item.id}	}}>
+												<Button variant="contained"><CreateIcon/></Button>
+											</Link>
 										</TableCell>
 										<TableCell>{item.id}</TableCell>
 										{(item.thumbImageUrl !== "")

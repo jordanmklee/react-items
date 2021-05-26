@@ -11,17 +11,11 @@ class GridButtons extends React.Component{
 				<div style={{float: "left"}}>
 					<TextField id="searchField" label="Search" variant="outlined" />
 				</div>
-				<ul className="buttonContainer" style={{float: "right"}}>
-					<li>
-						<Button variant="contained" color="primary">Add</Button>
-					</li>
-					<li>
-						<Button variant="contained" color="secondary">Delete</Button>
-					</li>
-					<li>
-						<Button variant="contained">Edit</Button>
-					</li>
-				</ul>
+				<div className="buttonContainer" style={{float: "right"}}>
+					<Button variant="contained" color="primary">Add</Button>
+					<Button variant="contained" color="secondary">Delete</Button>
+					<Button variant="contained">Edit</Button>
+				</div>
 			</Container>
 		)
 	}
