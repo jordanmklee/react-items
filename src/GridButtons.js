@@ -10,19 +10,19 @@ import { Link } from "react-router-dom";
 class GridButtons extends React.Component{
 	render(){
 		return(
-			<Container>
-				<div >
+			<Container style={{paddingBottom: "15px"}}>
+				<Paper style={{ overflow: "hidden", padding: "10px" }}>
 					<div style={{float: "left"}}>
-						<TextField id="searchField" label="Search" variant="filled" />
+						<TextField id="searchField" label="Search" variant="outlined" />
 					</div>
-					<div className="buttonContainer" style={{float: "right", backgroundColor: "black"}}>
+					<div className="buttonContainer" style={{float: "right"}}>
 						<Link to={{	pathname: "/form",
 									state: {id: 0}	}}>
-							<Button variant="contained" color="primary">Add</Button></Link>
-						<Button variant="contained" color="secondary" onClick={this.props.handleDeleteClick}>Delete</Button>
-						<Button variant="contained" onClick={this.props.handleEditClick}>Edit</Button>
+							<Button variant="contained" color="primary" size="large">Add</Button></Link>
+						<Button variant="contained" color="secondary" size="large" onClick={this.props.handleDeleteClick}>Delete</Button>
+						<Button variant="contained" size="large" onClick={this.props.handleEditClick}>Edit</Button>
 					</div>
-				</div>
+				</Paper>
 			</Container>
 		)
 	}
