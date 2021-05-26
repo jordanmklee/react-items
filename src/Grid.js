@@ -2,8 +2,10 @@ import React from 'react';
 import GridButtons from "./GridButtons"
 
 import Paper from '@material-ui/core/Paper';
-
 import Container from '@material-ui/core/Container';
+import Checkbox from '@material-ui/core/Checkbox';
+import Button from '@material-ui/core/Button';
+import CreateIcon from '@material-ui/icons/Create';
 import TableContainer from '@material-ui/core/TableContainer';
 import Table from '@material-ui/core/Table';
 import TableHead from '@material-ui/core/TableHead';
@@ -80,6 +82,10 @@ class Grid extends React.Component{
 						<Table>
 							<TableHead>
 								<TableRow>
+									<TableCell>
+										<Checkbox/>
+									</TableCell>
+									<TableCell/>
 									<TableCell>ID</TableCell>
 									<TableCell>Thumb Image</TableCell>
 									<TableCell>Name</TableCell>
@@ -94,14 +100,20 @@ class Grid extends React.Component{
 							<TableBody>
 								{this.state.items.map((item) => (
 									<TableRow key={item.id}>
+										<TableCell>
+											<Checkbox/>
+										</TableCell>
+										<TableCell>
+											<Button variant="contained"><CreateIcon/></Button>
+										</TableCell>
 										<TableCell>{item.id}</TableCell>
 										{(item.thumbImageUrl !== "")
 										?	(<TableCell><img className="thumbnail" src={item.thumbImageUrl} alt=""/></TableCell>)
 										:	(<TableCell><img className="thumbnailPlaceholder" alt=""/></TableCell>)}
 										<TableCell>{item.name}</TableCell>
 										<TableCell>{item.recordStatus}</TableCell>
-										<TableCell>{item.createdBy}</TableCell>
-										<TableCell>{item.modifiedBy}</TableCell>
+										<TableCell>{item.createdByUser}</TableCell>
+										<TableCell>{item.modifiedByUser}</TableCell>
 										<TableCell>{item.dateCreated}</TableCell>
 										<TableCell>{item.dateModified}</TableCell>
 									</TableRow>
