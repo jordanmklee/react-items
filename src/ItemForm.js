@@ -6,10 +6,12 @@ import Container from '@material-ui/core/Container';
 import TextField from '@material-ui/core/TextField';
 import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from '@material-ui/core/FormControl';
-import FormHelperText from '@material-ui/core/FormHelperText';
+//import FormHelperText from '@material-ui/core/FormHelperText';
 import Select from "@material-ui/core/Select";
 import MenuItem from '@material-ui/core/MenuItem';
 import Button from "@material-ui/core/Button";
+
+import AddIcon from '@material-ui/icons/Add';
 
 import { Link } from "react-router-dom";
 
@@ -26,7 +28,7 @@ class ItemForm extends React.Component{
 		createdByUser: "",
 		dateCreated: "",
 		dateModified: "",
-		id: "",
+		id: this.props.location.state.id,
 		imageUrl: "",
 		modifiedBy: "",
 		modifiedByUser: "",
@@ -43,29 +45,33 @@ class ItemForm extends React.Component{
 	}
 
 	componentDidMount(){
-		// Load Record Status dropdown values, existing values for item, pictures via API
-		axios.all([
-			axios.get(API_GET_RECORD_STATUS_LIST),
-			axios.get(API_GET_ITEM + this.props.location.state.id),
-			axios.get(API_GET_ITEM_PICTURES + this.props.location.state.id)
-		])
-		.then(axios.spread((recordStatusRes, itemRes, pictureRes) => {
-			// Parse picture response into array of URL/thumbnail URLs
-			let imgs = [];
-			pictureRes.data.data.forEach((img) => {
-				imgs.push({	id: img.id,
-							imageUrl: img.imageUrl,
-							thumbImageUrl: img.thumbImageUrl	})
+		// Load Record Status dropdown values via API
+		axios.get(API_GET_RECORD_STATUS_LIST)
+			.then(res => {
+				this.setState({	recordStatusList:res.data.data })
+
+				// If editing, load existing values and pictures for item too
+				if(this.props.location.state.id !== 0){
+					axios.all([
+						axios.get(API_GET_ITEM + this.props.location.state.id),
+						axios.get(API_GET_ITEM_PICTURES + this.props.location.state.id)
+					])
+					.then(axios.spread((itemRes, pictureRes) => {
+						// Parse picture response into array of URL/thumbnail URLs
+						let imgs = [];
+						pictureRes.data.data.forEach((img) => {
+							imgs.push({	id: img.id,
+										imageUrl: img.imageUrl,
+										thumbImageUrl: img.thumbImageUrl	})
+						})
+
+						this.setState({	name: itemRes.data.data.name,
+										recordStatusId: itemRes.data.data.recordStatusId,
+			
+										pictures: imgs })
+					}))
+				}
 			})
-
-			this.setState({	recordStatusList: recordStatusRes.data.data,
-							
-							id: itemRes.data.data.id,
-							name: itemRes.data.data.name,
-							recordStatusId: itemRes.data.data.recordStatusId,
-
-							pictures: imgs })
-		}))
 	}
 	
 	render(){
@@ -73,8 +79,13 @@ class ItemForm extends React.Component{
 		return(
 			<Container style={{width: "500px"}}><Paper>
 				<div className="formContainer">
-					<h1>Edit</h1>
-					<h2>Item {this.state.id}</h2>
+					{(this.state.id !== 0)
+					?	(<>
+							<h1>Edit</h1>
+							<h2>Item {this.state.id}</h2>
+						</>)
+					:	( <h1>Add</h1> )}
+					
 						
 					<div className="inputContainer">
 						<TextField label="Name" value={this.state.name} variant="outlined" fullWidth></TextField>
@@ -100,6 +111,9 @@ class ItemForm extends React.Component{
 						{this.state.pictures.map((image) => (
 							<img className="thumbnail" key={image.id} src={image.thumbImageUrl} alt=""/>
 						))}
+						<div className="inputContainer">
+							<Button variant="outlined" size="small"><AddIcon/></Button>
+						</div>
 					</div>
 
 					<div className="inputContainer">

@@ -57,7 +57,15 @@ class Grid extends React.Component{
 				this.setState({ items: newItemsState, totalNumItems: newTotalNumItems });
 			})
 	}
-	
+
+	handleDeleteClick = (event) => {
+		console.log(event);
+	}
+
+	handleEditClick = (event) => {
+		console.log(event);
+	}
+
 	handleChangePage = (event, newPage) => {
 		this.setState({ pageNum: (newPage + 1) }, () => {
 			this.updateGrid(this.state.numItemsPerPage, this.state.pageNum)
@@ -78,7 +86,9 @@ class Grid extends React.Component{
 	render(){
 		return(
 			<div>
-				<GridButtons/>
+				<GridButtons
+					handleDeleteClick={this.handleDeleteClick}
+					handleEditClick={this.handleEditClick}/>
 
 				{/* TODO Hardcoded padding for bottom */}
 				<Container style={{paddingBottom: "100px"}}>
