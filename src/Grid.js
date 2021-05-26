@@ -1,7 +1,9 @@
 import React from 'react';
+import GridButtons from "./GridButtons"
 
 import Paper from '@material-ui/core/Paper';
 
+import Container from '@material-ui/core/Container';
 import TableContainer from '@material-ui/core/TableContainer';
 import Table from '@material-ui/core/Table';
 import TableHead from '@material-ui/core/TableHead';
@@ -69,53 +71,60 @@ class Grid extends React.Component{
 
 	render(){
 		return(
-			<TableContainer component={Paper}>
-				<Table>
-					<TableHead>
-						<TableRow>
-							<TableCell>ID</TableCell>
-							<TableCell>Thumb Image</TableCell>
-							<TableCell>Name</TableCell>
-							<TableCell>Record Status</TableCell>
-							<TableCell>Created By</TableCell>
-							<TableCell>Modified By</TableCell>
-							<TableCell>Date Created</TableCell>
-							<TableCell>Date Modified</TableCell>
-						</TableRow>
-					</TableHead>
+			<div>
+				<GridButtons/>
+				
+				{/* TODO Hardcoded padding for bottom */}
+				<Container style={{paddingBottom: "100px"}}>
+					<TableContainer component={Paper}>
+						<Table>
+							<TableHead>
+								<TableRow>
+									<TableCell>ID</TableCell>
+									<TableCell>Thumb Image</TableCell>
+									<TableCell>Name</TableCell>
+									<TableCell>Record Status</TableCell>
+									<TableCell>Created By</TableCell>
+									<TableCell>Modified By</TableCell>
+									<TableCell>Date Created</TableCell>
+									<TableCell>Date Modified</TableCell>
+								</TableRow>
+							</TableHead>
 
-					{/* TODO Replace with ThumbImageURL */}
-					<TableBody>
-						{this.state.items.map((item) => (
-							<TableRow key={item.id}>
-								<TableCell>{item.id}</TableCell>
-								<TableCell>{item.id}</TableCell>
-								<TableCell>{item.name}</TableCell>
-								<TableCell>{item.recordStatus}</TableCell>
-								<TableCell>{item.createdBy}</TableCell>
-								<TableCell>{item.modifiedBy}</TableCell>
-								<TableCell>{item.dateCreated}</TableCell>
-								<TableCell>{item.dateModified}</TableCell>
-							</TableRow>
-							)
-						)}
-						
-					</TableBody>
+							{/* TODO Replace with ThumbImageURL */}
+							<TableBody>
+								{this.state.items.map((item) => (
+									<TableRow key={item.id}>
+										<TableCell>{item.id}</TableCell>
+										<TableCell>{item.id}</TableCell>
+										<TableCell>{item.name}</TableCell>
+										<TableCell>{item.recordStatus}</TableCell>
+										<TableCell>{item.createdBy}</TableCell>
+										<TableCell>{item.modifiedBy}</TableCell>
+										<TableCell>{item.dateCreated}</TableCell>
+										<TableCell>{item.dateModified}</TableCell>
+									</TableRow>
+									)
+								)}
+								
+							</TableBody>
 
-					<TableFooter>
-						<TableRow>
-							<TablePagination
-								rowsPerPageOptions={[5, 10, 20, 50, 100]}
-								rowsPerPage={this.state.numItemsPerPage}
-								page={this.state.pageNum - 1}
-								count={this.state.totalNumItems}
-								onChangePage={this.handleChangePage}
-								onChangeRowsPerPage={this.handleChangeRowsPerPage}
-							/>
-						</TableRow>
-					</TableFooter>
-				</Table>
-			</TableContainer>
+							<TableFooter>
+								<TableRow>
+									<TablePagination
+										rowsPerPageOptions={[5, 10, 20, 50, 100]}
+										rowsPerPage={this.state.numItemsPerPage}
+										page={this.state.pageNum - 1}
+										count={this.state.totalNumItems}
+										onChangePage={this.handleChangePage}
+										onChangeRowsPerPage={this.handleChangeRowsPerPage}
+									/>
+								</TableRow>
+							</TableFooter>
+						</Table>
+					</TableContainer>
+				</Container>
+			</div>
 		)
 	}
 }

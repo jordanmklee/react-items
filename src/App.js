@@ -2,6 +2,7 @@ import React from 'react';
 import './App.css';
 import '@fontsource/roboto';
 
+import Container from '@material-ui/core/Container';
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 import ItemForm from "./ItemForm";
@@ -21,7 +22,9 @@ class App extends React.Component{
 	render(){
 		return(
 			<div>
-				<h1>Items</h1>
+				<Container>
+					<h1>Items</h1>
+				</Container>
 				<Router>
 					<Switch>
 						<Route path="/form" component={ItemForm}/>
