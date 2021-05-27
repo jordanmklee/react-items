@@ -68,6 +68,7 @@ class Grid extends React.Component{
 						thumbImageUrl: item.thumbImageUrl,
 
 						isSelected: false,
+						beenEdited: false,
 					})
 				})
 			
@@ -99,28 +100,28 @@ class Grid extends React.Component{
 	}
 
 	handleEditClick = (event) => {
+		// Save
 		if(this.state.editMode){
-			// TODO API call to save changes
+			// Only need to POST edited items
 			this.state.items.forEach((item) => {
-				console.log(item)
+				if(item.beenEdited){
+					console.log(item.id)
+					let newItem = {
+						Content: "[{"
+						+ "Id:" + item.id + "," 
+						+ "Name:'" + item.name + "',"
+						+ "RecordStatusId:" + item.recordStatusId + ","
+						+ "CreatedBy:" + item.createdBy + ","
+						+ "ModifiedBy:1},]"	// TODO Hardcoded
+					}
+					
+					let config = { "Content-Type": "application/json" }
+					
+					// API call to save changes
+					axios.post(API_SAVE_ITEMS, newItem, config)
 
-				// TODO Modified is hardcoded
-				let newItem = {
-					Content: "[{"
-							+ "Id:" + this.state.id + "," 
-							+ "Name:'" + this.state.name + "',"
-							+ "RecordStatusId:" + this.state.recordStatusId + ","
-							+ "CreatedBy:" + this.state.createdBy + ","
-							+ "ModifiedBy:1},]"
+					item.beenEdited = false;	// Don't need to POST again next time TODO bad to mutate state?
 				}
-				
-				let config = { "Content-Type": "application/json" }
-		
-				console.log(newItem)
-				axios.post(API_SAVE_ITEMS, newItem, config)
-					.then(res => {
-						console.log(res);
-					})
 			})
 		}
 
@@ -160,6 +161,7 @@ class Grid extends React.Component{
 		let index = this.state.items.findIndex(x => x === changedItem);	// Get index of item
 		let item = this.state.items[index];								// Copy item
 		item.name = newValue;											// Replace name in item
+		item.beenEdited = true;
 		stateItems[index] = item;										// Replace item in array
 
 		this.setState({ items: stateItems });
@@ -171,6 +173,7 @@ class Grid extends React.Component{
 		let index = this.state.items.findIndex(x => x === changedItem);	// Get index of item
 		let item = this.state.items[index];								// Copy item
 		item.recordStatusId = newValue;									// Replace name in item
+		item.beenEdited = true;
 		stateItems[index] = item;										// Replace item in array
 
 		this.setState({ items: stateItems });
@@ -236,6 +239,7 @@ class Grid extends React.Component{
 									<GridItem
 										key={item.id}
 										item={item}
+
 										onSelectClick={this.handleSelectClick}
 										editMode={this.state.editMode}
 										recordStatusList={this.state.recordStatusList}
@@ -266,6 +270,15 @@ class Grid extends React.Component{
 }
 
 class GridItem extends React.Component{
+	getRecordStatusName = (id) => {
+		let name = ""
+		this.props.recordStatusList.forEach((status) => {
+			if(status.id === id)
+				name = status.name
+		})
+		return <TableCell>{name}</TableCell>
+	}
+	
 	onSelectClick = () => {
 		this.props.onSelectClick(this.props.item);
 	}
@@ -315,7 +328,7 @@ class GridItem extends React.Component{
 									)) }
 								</Select>
 							</TableCell>)
-						:	(<TableCell>{this.props.item.recordStatus}</TableCell>)}
+						:	(this.getRecordStatusName(this.props.item.recordStatusId))}
 					
 					<TableCell>{this.props.item.createdByUser}</TableCell>
 					<TableCell>{this.props.item.modifiedByUser}</TableCell>
