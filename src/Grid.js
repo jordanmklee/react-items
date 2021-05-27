@@ -25,6 +25,7 @@ import { Link } from "react-router-dom";
 
 import axios from "axios";
 const API_GET_ITEMS = "https://bimiscwebapi-test.azurewebsites.net/api/misc/getitems/";
+const API_GET_RECORD_STATUS_LIST = "https://bimiscwebapi-test.azurewebsites.net/api/misc/getrecordstatuslistforitems/";
 
 class Grid extends React.Component{
 	state = {
@@ -38,6 +39,7 @@ class Grid extends React.Component{
 		deleteMode: false,
 		editMode: false,
 		allSelected: false,
+		recordStatusList: [],
 	}
 
 	// Update grid items via API
@@ -143,8 +145,15 @@ class Grid extends React.Component{
 		})
 	}
 
-	// Populate grid with items
 	componentDidMount(){
+		// Load Record Status dropdown values via API
+		// TODO Combine this with the one in ItemForm.js?
+		axios.get(API_GET_RECORD_STATUS_LIST)
+		.then(res => {
+			this.setState({	recordStatusList: res.data.data })
+		})
+		
+		// Populate grid with items
 		this.updateGrid();
 	}
 
@@ -186,6 +195,7 @@ class Grid extends React.Component{
 										item={item}
 										onSelectClick={this.handleSelectClick}
 										editMode={this.state.editMode}
+										recordStatusList={this.state.recordStatusList}
 									/>
 								))}
 							</TableBody>
@@ -238,13 +248,13 @@ class GridItem extends React.Component{
 							</TableCell>)
 						:	(<TableCell>{this.props.item.name}</TableCell>)}
 					
-					{/* TODO Populate dropdown with API values */}
+					{/* Populate dropdown with API values */}
 					{(this.props.editMode)
 						?	(<TableCell>
 								<Select variant="outlined" fullWidth value={this.props.item.recordStatusId}>
-									<MenuItem value={1}>New</MenuItem>
-									<MenuItem value={2}>Visible</MenuItem>
-									<MenuItem value={3}>Not Visible</MenuItem>
+									{ this.props.recordStatusList.map((status) => (
+										<MenuItem key={status.id} value={status.id}>{status.name}</MenuItem>
+									)) }
 								</Select>
 							</TableCell>)
 						:	(<TableCell>{this.props.item.recordStatus}</TableCell>)}
