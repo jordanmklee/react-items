@@ -20,23 +20,15 @@ import axios from "axios";
 const API_GET_RECORD_STATUS_LIST = "https://bimiscwebapi-test.azurewebsites.net/api/misc/getrecordstatuslistforitems/";
 const API_GET_ITEM = "https://bimiscwebapi-test.azurewebsites.net/api/misc/getitem/";
 const API_GET_ITEM_PICTURES = "https://bimiscwebapi-test.azurewebsites.net/api/misc/getitempictures/";
+const API_SAVE_ITEMS = "https://bimiscwebapi-test.azurewebsites.net/api/misc/saveitems/";
 
 class ItemForm extends React.Component{
 	state = {
 		recordStatusList: [],
 		
-		createdBy: "",
-		createdByUser: "",
-		dateCreated: "",
-		dateModified: "",
 		id: this.props.location.state.id,
-		imageUrl: "",
-		modifiedBy: "",
-		modifiedByUser: "",
 		name: "",
-		recordStatus: "",
 		recordStatusId: "",
-		thumbImageUrl: "",
 		
 		pictures: [],
 	}
@@ -46,6 +38,7 @@ class ItemForm extends React.Component{
 	}
 
 	handleRecordStatusIdChange = (event) => {
+		console.log(event)
 		this.setState({ recordStatusId: event.target.value })
 	}
 
@@ -55,8 +48,25 @@ class ItemForm extends React.Component{
 	}
 
 	handleSaveClick = (event) => {
-		// TODO Save button functionality
-		console.log("Saving changes")
+		// TODO CreatedBy and ModifiedBy are hardcoded
+		// TODO Save added images?
+		let newItem = {
+			Content: "[{"
+					+ "Id:" + this.state.id + "," 
+					+ "Name:'" + this.state.name + "',"
+					+ "RecordStatusId:" + this.state.recordStatusId + ","
+					+ "CreatedBy:1,"
+					+ "ModifiedBy:1},]"
+		}
+		
+		let config = { "Content-Type": "application/json" }
+
+		console.log(newItem)
+		axios.post(API_SAVE_ITEMS, newItem, config)
+			.then(res => {
+				console.log(res);
+			})
+
 	}
 
 	componentDidMount(){
@@ -115,7 +125,9 @@ class ItemForm extends React.Component{
 							variant="outlined"
 							fullWidth>
 								{ this.state.recordStatusList.map((status) => (
-									<MenuItem key={status.id} value={status.id}>{status.name}</MenuItem>
+									<MenuItem
+										key={status.id}
+										value={status.id}>{status.name}</MenuItem>
 								)) }
 							</Select>
 						</FormControl>
