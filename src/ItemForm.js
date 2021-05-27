@@ -1,5 +1,4 @@
 import React from "react";
-import Carousel from "./Carousel";
 
 import Paper from '@material-ui/core/Paper';
 import Container from '@material-ui/core/Container';
@@ -11,6 +10,8 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from "@material-ui/core/Select";
 import MenuItem from '@material-ui/core/MenuItem';
 import Button from "@material-ui/core/Button";
+
+import Slider from "react-slick";
 
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from '@material-ui/icons/Add';
@@ -35,6 +36,7 @@ class ItemForm extends React.Component{
 		createdBy: "",
 		
 		pictures: [],
+		currentIndex: 0,
 	}
 	
 	handleNameChange = (event) => {
@@ -45,15 +47,43 @@ class ItemForm extends React.Component{
 		console.log(event)
 		this.setState({ recordStatusId: event.target.value })
 	}
+	
+	handlePictureChange = (newIndex) => {
+        console.log(newIndex)
+		this.setState({ currentIndex: newIndex})
+	}
 
 	handleDeletePictureclick = (event) => {
-		// TODO implement
-		console.log("Deleting...")
+		let statePictures = [...this.state.pictures]
+		statePictures.splice(this.state.currentIndex, 1);
+
+		// TODO Call API to delete picture
+
+		this.setState({ pictures: statePictures })
 	}
 
 	handleNewPictureClick = (event) => {
-		// TODO Add new picture functionality
-		console.log("Adding new picture")
+		let statePictures = [...this.state.pictures]
+		// TODO 
+		/* statePictures.push({
+			id: 0,
+			imageUrl: "",
+			thumbImageUrl: "",
+		})
+		*/
+
+		// TODO Call API to add new picture
+		/*
+			Id
+			ItemId
+			FileUrl
+			Main
+			CreatedBy
+		*/
+		
+		console.log(statePictures)
+
+		this.setState({ pictures: statePictures })
 	}
 
 	handleSaveClick = (event) => {
@@ -109,6 +139,12 @@ class ItemForm extends React.Component{
 	}
 	
 	render(){
+		const settings = {
+			infinite: false,
+			slidesToShow: 1,
+			slidesToScroll: 1,
+		}
+
 		return(
 			<Container><Paper>
 				<div className="formContainer">
@@ -120,9 +156,12 @@ class ItemForm extends React.Component{
 					:	( <h1>Add</h1> )}
 					
 						
+
 					<div className="inputContainer">
 						<TextField label="Name" value={this.state.name} variant="outlined" fullWidth onChange={this.handleNameChange}></TextField>
 					</div>
+
+
 
 					<div className="inputContainer">
 						<FormControl variant="outlined" fullWidth>
@@ -142,9 +181,26 @@ class ItemForm extends React.Component{
 						</FormControl>
 					</div>
 
+
+					{/* Carousel */}
 					<div style={{ paddingTop: "50px" }}>
-						<Carousel pictures={this.state.pictures}/>
+						<div style={{ margin: "auto", textAlign: "center", width: "90%" }}>
+							<Slider {...settings} afterChange={this.handlePictureChange}>
+
+							{this.state.pictures.map((image) => (
+								<div key={image.id}>
+									<img style={{ margin: "auto", height: "300px" }}
+										key={image.id}
+										src={image.imageUrl}
+										alt=""/>
+								</div>
+							))}
+							
+							</Slider>
+						</div>
 					</div>
+
+
 
 					<div className="inputContainer">
 						<div className="buttonContainer">
@@ -160,6 +216,8 @@ class ItemForm extends React.Component{
 								<AddIcon/></Button>
 						</div>
 					</div>
+
+
 
 					<div className="inputContainer" style={{ paddingTop: "50px"}}>
 						<div className="buttonContainer">
