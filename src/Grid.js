@@ -26,6 +26,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 const API_GET_ITEMS = "https://bimiscwebapi-test.azurewebsites.net/api/misc/getitems/";
 const API_GET_RECORD_STATUS_LIST = "https://bimiscwebapi-test.azurewebsites.net/api/misc/getrecordstatuslistforitems/";
+const API_DELETE_ITEM = "https://bimiscwebapi-test.azurewebsites.net/api/misc/deleteitem/";
 
 class Grid extends React.Component{
 	state = {
@@ -83,18 +84,18 @@ class Grid extends React.Component{
 		let notSelected = [];
 		this.state.items.forEach((item) => {
 			if(item.isSelected){
-				// TODO API call
-				console.log("deleting " + item.id)
+				axios.delete(API_DELETE_ITEM + item.id + "/" + item.createdBy)
+					.then(() => {
+						this.updateGrid();	// TODO works, but minor delay since you update every delete
+					})
 			}
 			else
 				notSelected.push(item);
 		})
 
-		// TODO Pagination does not update on delete
 		// After delete, reset deleteMode and checkboxes
-		this.setState({ items: notSelected,
-						deleteMode: false,
-						allSelected: false })
+		this.setState({ deleteMode: false,
+			allSelected: false })
 	}
 
 	handleEditClick = (event) => {
