@@ -12,6 +12,7 @@ import Select from "@material-ui/core/Select";
 import MenuItem from '@material-ui/core/MenuItem';
 import Button from "@material-ui/core/Button";
 
+import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from '@material-ui/icons/Add';
 
 import { Link } from "react-router-dom";
@@ -21,6 +22,8 @@ const API_GET_RECORD_STATUS_LIST = "https://bimiscwebapi-test.azurewebsites.net/
 const API_GET_ITEM = "https://bimiscwebapi-test.azurewebsites.net/api/misc/getitem/";
 const API_GET_ITEM_PICTURES = "https://bimiscwebapi-test.azurewebsites.net/api/misc/getitempictures/";
 const API_SAVE_ITEMS = "https://bimiscwebapi-test.azurewebsites.net/api/misc/saveitems/";
+//const API_SAVE_ITEM_PICTURE = "https://bimiscwebapi-test.azurewebsites.net/api/misc/saveitempicture/";
+//const API_DELETE_ITEM_PICTURE = "https://bimiscwebapi-test.azurewebsites.net/api/misc/deleteitempicture/";
 
 class ItemForm extends React.Component{
 	state = {
@@ -43,13 +46,17 @@ class ItemForm extends React.Component{
 		this.setState({ recordStatusId: event.target.value })
 	}
 
+	handleDeletePictureclick = (event) => {
+		// TODO implement
+		console.log("Deleting...")
+	}
+
 	handleNewPictureClick = (event) => {
 		// TODO Add new picture functionality
 		console.log("Adding new picture")
 	}
 
 	handleSaveClick = (event) => {
-		// TODO ModifiedBy is hardcoded
 		// TODO Save added images?
 		let newItem = {
 			Content: "[{"
@@ -57,7 +64,7 @@ class ItemForm extends React.Component{
 					+ "Name:'" + this.state.name + "',"
 					+ "RecordStatusId:" + this.state.recordStatusId + ","
 					+ "CreatedBy:" + this.state.createdBy + ","
-					+ "ModifiedBy:1},]"
+					+ "ModifiedBy:1},]"	// TODO Hardcoded
 		}
 		
 		let config = { "Content-Type": "application/json" }
@@ -140,21 +147,32 @@ class ItemForm extends React.Component{
 					</div>
 
 					<div className="inputContainer">
-						<Button
-							variant="outlined"
-							size="small"
-							onClick={this.handleNewPictureClick}>
-							<AddIcon/></Button>
+						<div className="buttonContainer">
+							<Button
+								variant="outlined"
+								size="small"
+								onClick={this.handleDeletePictureclick}>
+								<DeleteIcon/></Button>
+							<Button
+								variant="outlined"
+								size="small"
+								onClick={this.handleNewPictureClick}>
+								<AddIcon/></Button>
+						</div>
 					</div>
 
 					<div className="inputContainer" style={{ paddingTop: "50px"}}>
 						<div className="buttonContainer">
 							<Link to="/">
-								<Button variant="contained">Back</Button>
+								<Button
+									variant="contained"
+									size="large">
+									Back</Button>
 							</Link>
 							<Button
 								variant="contained"
 								color="primary"
+								size="large"
 								onClick={this.handleSaveClick}>
 								Save
 							</Button>

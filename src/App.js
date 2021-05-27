@@ -8,12 +8,6 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import ItemForm from "./ItemForm";
 import Grid from "./Grid";
 
-/*
-const API_SAVE_ITEM_PICTURE = "https://bimiscwebapi-test.azurewebsites.net/api/misc/saveitempicture/";
-const API_DELETE_ITEM_PICTURE = "https://bimiscwebapi-test.azurewebsites.net/api/misc/deleteitempicture/";
-
-*/
-
 class App extends React.Component{
 	render(){
 		return(
