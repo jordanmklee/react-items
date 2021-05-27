@@ -14,7 +14,7 @@ class Carousel extends React.Component {
 				<Slider {...settings}>
 
 				{this.props.pictures.map((image) => (
-					<div>
+					<div key={image.id}>
 						<img style={{ margin: "auto", height: "300px" }}
 							key={image.id}
 							src={image.imageUrl}

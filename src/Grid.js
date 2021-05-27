@@ -94,8 +94,7 @@ class Grid extends React.Component{
 		})
 
 		// After delete, reset deleteMode and checkboxes
-		this.setState({ deleteMode: false,
-			allSelected: false })
+		this.setState({ deleteMode: false, allSelected: false })
 	}
 
 	handleEditClick = (event) => {

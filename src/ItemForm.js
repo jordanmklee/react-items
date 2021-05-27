@@ -29,6 +29,7 @@ class ItemForm extends React.Component{
 		id: this.props.location.state.id,
 		name: "",
 		recordStatusId: "",
+		createdBy: "",
 		
 		pictures: [],
 	}
@@ -48,14 +49,14 @@ class ItemForm extends React.Component{
 	}
 
 	handleSaveClick = (event) => {
-		// TODO CreatedBy and ModifiedBy are hardcoded
+		// TODO ModifiedBy is hardcoded
 		// TODO Save added images?
 		let newItem = {
 			Content: "[{"
 					+ "Id:" + this.state.id + "," 
 					+ "Name:'" + this.state.name + "',"
 					+ "RecordStatusId:" + this.state.recordStatusId + ","
-					+ "CreatedBy:1,"
+					+ "CreatedBy:" + this.state.createdBy + ","
 					+ "ModifiedBy:1},]"
 		}
 		
@@ -92,6 +93,7 @@ class ItemForm extends React.Component{
 
 						this.setState({	name: itemRes.data.data.name,
 										recordStatusId: itemRes.data.data.recordStatusId,
+										createdBy: itemRes.data.data.createdBy,
 			
 										pictures: imgs })
 					}))
