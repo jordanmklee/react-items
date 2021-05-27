@@ -158,11 +158,22 @@ class Grid extends React.Component{
 		let stateItems = [...this.state.items];
 		
 		let index = this.state.items.findIndex(x => x === changedItem);	// Get index of item
-		let item = this.state.items[index]								// Copy item
+		let item = this.state.items[index];								// Copy item
 		item.name = newValue;											// Replace name in item
 		stateItems[index] = item;										// Replace item in array
 
-		this.setState({ items: stateItems })
+		this.setState({ items: stateItems });
+	}
+
+	handleRecordStatusIdChange = (changedItem, newValue) => {
+		let stateItems = [...this.state.items];
+
+		let index = this.state.items.findIndex(x => x === changedItem);	// Get index of item
+		let item = this.state.items[index];								// Copy item
+		item.recordStatusId = newValue;									// Replace name in item
+		stateItems[index] = item;										// Replace item in array
+
+		this.setState({ items: stateItems });
 	}
 
 	handleChangePage = (event, newPage) => {
@@ -229,6 +240,7 @@ class Grid extends React.Component{
 										editMode={this.state.editMode}
 										recordStatusList={this.state.recordStatusList}
 										onNameChange={this.handleNameChange}
+										onRecordStatusIdChange={this.handleRecordStatusIdChange}
 									/>
 								))}
 							</TableBody>
@@ -261,6 +273,10 @@ class GridItem extends React.Component{
 	handleNameChange = (event) => {
 		this.props.onNameChange(this.props.item, event.target.value)
 	}
+	
+	handleRecordStatusIdChange = (event) => {
+		this.props.onRecordStatusIdChange(this.props.item, event.target.value)
+	}
 
 	render(){
 		return(
@@ -285,10 +301,15 @@ class GridItem extends React.Component{
 							</TableCell>)
 						:	(<TableCell>{this.props.item.name}</TableCell>)}
 					
-					{/* Populate dropdown with API values */}
 					{(this.props.editMode)
 						?	(<TableCell>
-								<Select variant="outlined" fullWidth value={this.props.item.recordStatusId}>
+								<Select
+									variant="outlined"
+									fullWidth 
+									value={this.props.item.recordStatusId}
+									onChange={this.handleRecordStatusIdChange}>
+									
+									{/* Populate dropdown with API values */}
 									{ this.props.recordStatusList.map((status) => (
 										<MenuItem key={status.id} value={status.id}>{status.name}</MenuItem>
 									)) }
