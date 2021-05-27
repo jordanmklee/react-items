@@ -29,8 +29,12 @@ img.thumbnailPlaceholder{
 }
 
 .inputContainer{
+	width: 400px;
+	margin: auto;
 	padding: 10px;
 }
 
-
+.slick-prev:before, .slick-next:before{
+    color:black;
+}
 

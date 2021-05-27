@@ -1,4 +1,5 @@
 import React from "react";
+import Carousel from "./Carousel";
 
 import Paper from '@material-ui/core/Paper';
 import Container from '@material-ui/core/Container';
@@ -89,9 +90,8 @@ class ItemForm extends React.Component{
 	}
 	
 	render(){
-		// TODO Hardcoded 500px width for form
 		return(
-			<Container style={{width: "500px"}}><Paper>
+			<Container><Paper>
 				<div className="formContainer">
 					{(this.state.id !== 0)
 					?	(<>
@@ -121,20 +121,19 @@ class ItemForm extends React.Component{
 						</FormControl>
 					</div>
 
-					<div className="inputContainer">
-						{this.state.pictures.map((image) => (
-							<img className="thumbnail" key={image.id} src={image.thumbImageUrl} alt=""/>
-						))}
-						<div className="inputContainer">
-							<Button
-								variant="outlined"
-								size="small"
-								onClick={this.handleNewPictureClick}>
-								<AddIcon/></Button>
-						</div>
+					<div style={{ paddingTop: "50px" }}>
+						<Carousel pictures={this.state.pictures}/>
 					</div>
 
 					<div className="inputContainer">
+						<Button
+							variant="outlined"
+							size="small"
+							onClick={this.handleNewPictureClick}>
+							<AddIcon/></Button>
+					</div>
+
+					<div className="inputContainer" style={{ paddingTop: "50px"}}>
 						<div className="buttonContainer">
 							<Link to="/">
 								<Button variant="contained">Back</Button>
