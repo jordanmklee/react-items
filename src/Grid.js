@@ -27,6 +27,7 @@ import axios from "axios";
 const API_GET_ITEMS = "https://bimiscwebapi-test.azurewebsites.net/api/misc/getitems/";
 const API_GET_RECORD_STATUS_LIST = "https://bimiscwebapi-test.azurewebsites.net/api/misc/getrecordstatuslistforitems/";
 const API_DELETE_ITEM = "https://bimiscwebapi-test.azurewebsites.net/api/misc/deleteitem/";
+const API_SAVE_ITEMS = "https://bimiscwebapi-test.azurewebsites.net/api/misc/saveitems/";
 
 class Grid extends React.Component{
 	state = {
@@ -100,7 +101,27 @@ class Grid extends React.Component{
 	handleEditClick = (event) => {
 		if(this.state.editMode){
 			// TODO API call to save changes
-			console.log("Saving changes...")
+			this.state.items.forEach((item) => {
+				console.log(item)
+
+				// TODO Modified is hardcoded
+				let newItem = {
+					Content: "[{"
+							+ "Id:" + this.state.id + "," 
+							+ "Name:'" + this.state.name + "',"
+							+ "RecordStatusId:" + this.state.recordStatusId + ","
+							+ "CreatedBy:" + this.state.createdBy + ","
+							+ "ModifiedBy:1},]"
+				}
+				
+				let config = { "Content-Type": "application/json" }
+		
+				console.log(newItem)
+				axios.post(API_SAVE_ITEMS, newItem, config)
+					.then(res => {
+						console.log(res);
+					})
+			})
 		}
 
 		this.setState({ editMode: !this.state.editMode })
@@ -131,6 +152,17 @@ class Grid extends React.Component{
 		})
 
 		this.setState({ items: stateItems, deleteMode: newDeleteMode })
+	}
+
+	handleNameChange = (changedItem, newValue) => {
+		let stateItems = [...this.state.items];
+		
+		let index = this.state.items.findIndex(x => x === changedItem);	// Get index of item
+		let item = this.state.items[index]								// Copy item
+		item.name = newValue;											// Replace name in item
+		stateItems[index] = item;										// Replace item in array
+
+		this.setState({ items: stateItems })
 	}
 
 	handleChangePage = (event, newPage) => {
@@ -196,6 +228,7 @@ class Grid extends React.Component{
 										onSelectClick={this.handleSelectClick}
 										editMode={this.state.editMode}
 										recordStatusList={this.state.recordStatusList}
+										onNameChange={this.handleNameChange}
 									/>
 								))}
 							</TableBody>
@@ -225,6 +258,10 @@ class GridItem extends React.Component{
 		this.props.onSelectClick(this.props.item);
 	}
 
+	handleNameChange = (event) => {
+		this.props.onNameChange(this.props.item, event.target.value)
+	}
+
 	render(){
 		return(
 				<TableRow key={this.props.item.id}>
@@ -244,7 +281,7 @@ class GridItem extends React.Component{
 					
 					{(this.props.editMode)
 						?	(<TableCell>
-								<TextField variant="outlined" value={this.props.item.name}/>
+								<TextField variant="outlined" value={this.props.item.name} onChange={this.handleNameChange}/>
 							</TableCell>)
 						:	(<TableCell>{this.props.item.name}</TableCell>)}
 					
