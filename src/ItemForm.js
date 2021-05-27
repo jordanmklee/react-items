@@ -62,7 +62,7 @@ class ItemForm extends React.Component{
 		// Load Record Status dropdown values via API
 		axios.get(API_GET_RECORD_STATUS_LIST)
 			.then(res => {
-				this.setState({	recordStatusList:res.data.data })
+				this.setState({	recordStatusList: res.data.data })
 
 				// If editing, load existing values and pictures for item too
 				if(this.props.location.state.id !== 0){
