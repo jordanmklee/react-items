@@ -61,7 +61,6 @@ class Grid extends React.Component{
 						modifiedBy: item.modifiedBy,
 						dateModified: item.dateModified,
 						recordStatusId: item.recordStatusId,
-						recordStatus: item.recordStatus,
 						createdByUser: item.createdByUser,
 						modifiedByUser: item.modifiedByUser,
 						imageUrl: item.imageUrl,
@@ -186,7 +185,8 @@ class Grid extends React.Component{
 	}
 
 	handleChangeRowsPerPage = (newRowsPerPage) => {
-		this.setState({ numItemsPerPage: newRowsPerPage.target.value }, () => {
+		this.setState({ numItemsPerPage: newRowsPerPage.target.value,
+						pageNum: 1 }, () => {
 			this.updateGrid()
 		})
 	}
