@@ -13,7 +13,8 @@ class GridButtons extends React.Component{
 			<Container style={{paddingBottom: "15px"}}>
 				<Paper style={{ overflow: "hidden", padding: "10px" }}>
 					<div style={{float: "left"}}>
-						<TextField id="searchField" label="Search" variant="outlined" />
+						<TextField id="searchField" label="Search" variant="outlined"
+							onChange={this.props.handleSearchChange}/>
 					</div>
 					<div className="buttonContainer" style={{float: "right"}}>
 						<Link to={{	pathname: "/form",

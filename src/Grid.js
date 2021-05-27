@@ -33,6 +33,7 @@ class Grid extends React.Component{
 		totalNumItems: 0,
 		numItemsPerPage: 20,
 		pageNum: 1,
+		searchTerm: "",
 
 		deleteMode: false,
 		editMode: false,
@@ -40,8 +41,10 @@ class Grid extends React.Component{
 	}
 
 	// Update grid items via API
-	updateGrid(numItems, itemPage){
-		axios.get(API_GET_ITEMS + numItems + "/" + itemPage)
+	updateGrid(){
+		axios.get(API_GET_ITEMS + this.state.numItemsPerPage + "/" 
+								+ this.state.pageNum + "/" 
+								+ this.state.searchTerm)
 			.then(res => {
 				var newTotalNumItems = parseInt(res.data.message);
 				var newItemsState = [];
@@ -66,6 +69,11 @@ class Grid extends React.Component{
 			
 				this.setState({ items: newItemsState, totalNumItems: newTotalNumItems });
 			})
+	}
+
+	handleSearchChange = (event) => {
+		this.setState({ searchTerm: event.target.value })
+		this.updateGrid()
 	}
 
 	// Delete selected items
@@ -125,19 +133,19 @@ class Grid extends React.Component{
 
 	handleChangePage = (event, newPage) => {
 		this.setState({ pageNum: (newPage + 1) }, () => {
-			this.updateGrid(this.state.numItemsPerPage, this.state.pageNum)
+			this.updateGrid()
 		})
 	}
 
 	handleChangeRowsPerPage = (newRowsPerPage) => {
 		this.setState({ numItemsPerPage: newRowsPerPage.target.value }, () => {
-			this.updateGrid(this.state.numItemsPerPage, this.state.pageNum)
+			this.updateGrid()
 		})
 	}
 
 	// Populate grid with items
 	componentDidMount(){
-		this.updateGrid(this.state.numItemsPerPage, this.state.pageNum);
+		this.updateGrid();
 	}
 
 	render(){
@@ -146,6 +154,7 @@ class Grid extends React.Component{
 				<GridButtons
 					deleteMode={this.state.deleteMode}
 					editMode={this.state.editMode}
+					handleSearchChange={this.handleSearchChange}
 					handleDeleteClick={this.handleDeleteClick}
 					handleEditClick={this.handleEditClick}/>
 
