@@ -254,7 +254,9 @@ class Grid extends React.Component{
 							<TableHead>
 								<TableRow>
 									<TableCell>
-										<Checkbox checked={this.state.allSelected} onClick={this.handleSelectAllClick}/>
+										<Checkbox
+											checked={this.state.allSelected}
+											onClick={this.handleSelectAllClick}/>
 									</TableCell>
 									<TableCell/>
 									<TableCell>ID</TableCell>
@@ -343,7 +345,9 @@ class GridItem extends React.Component{
 			<TableRow key={this.props.item.id}>
 					
 				<TableCell>
-					<Checkbox checked={this.props.item.isSelected} onClick={this.onSelectClick}/>
+					<Checkbox
+						checked={this.props.item.isSelected}
+						onClick={this.onSelectClick}/>
 				</TableCell>
 				
 				<TableCell>
@@ -361,21 +365,24 @@ class GridItem extends React.Component{
 				
 				{(this.props.editMode)
 					?	(<TableCell>
-							<TextField variant="outlined" value={this.props.item.name} onChange={this.handleNameChange}/>
+							<TextField variant="outlined"
+								value={this.props.item.name}
+								onChange={this.handleNameChange}/>
 						</TableCell>)
 					:	(<TableCell>{this.props.item.name}</TableCell>)}
 				
 				{(this.props.editMode)
 					?	(<TableCell>
-							<Select
-								variant="outlined"
-								fullWidth 
+							<Select variant="outlined" fullWidth 
 								value={this.props.item.recordStatusId}
 								onChange={this.handleRecordStatusIdChange}>
 								
 								{/* Populate dropdown with API values */}
 								{ this.props.recordStatusList.map((status) => (
-									<MenuItem key={status.id} value={status.id}>{status.name}</MenuItem>
+									<MenuItem key={status.id}
+										value={status.id}>
+										{status.name}
+									</MenuItem>
 								)) }
 							</Select>
 						</TableCell>)

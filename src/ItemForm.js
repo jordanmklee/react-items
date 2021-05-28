@@ -234,7 +234,10 @@ class ItemForm extends React.Component{
 						
 
 					<div className="inputContainer">
-						<TextField label="Name" value={this.state.name} variant="outlined" fullWidth onChange={this.handleNameChange}></TextField>
+						<TextField label="Name" variant="outlined" fullWidth
+							value={this.state.name}
+							onChange={this.handleNameChange}>
+						</TextField>
 					</div>
 
 
@@ -242,17 +245,16 @@ class ItemForm extends React.Component{
 					<div className="inputContainer">
 						<FormControl variant="outlined" fullWidth>
 							<InputLabel>Record Status</InputLabel>
-							<Select
-							label="Record Status"
-							value={this.state.recordStatusId}
-							onChange={this.handleRecordStatusIdChange}
-							variant="outlined"
-							fullWidth>
-								{ this.state.recordStatusList.map((status) => (
-									<MenuItem
-										key={status.id}
-										value={status.id}>{status.name}</MenuItem>
-								)) }
+							<Select label="Record Status" variant="outlined" fullWidth
+								value={this.state.recordStatusId}
+								onChange={this.handleRecordStatusIdChange}>
+									{ this.state.recordStatusList.map((status) => (
+										<MenuItem
+											key={status.id}
+											value={status.id}>
+												{status.name}
+										</MenuItem>
+									)) }
 							</Select>
 						</FormControl>
 					</div>
@@ -261,7 +263,8 @@ class ItemForm extends React.Component{
 					{/* Carousel */}
 					<div style={{ paddingTop: "50px" }}>
 						<div style={{ margin: "auto", textAlign: "center", width: "90%" }}>
-							<Slider {...settings} afterChange={this.handlePictureChange}>
+							<Slider {...settings}
+								afterChange={this.handlePictureChange}>
 
 							{this.state.pictures.map((image) => (
 								<div key={image.id}>
@@ -290,14 +293,10 @@ class ItemForm extends React.Component{
 
 					<div className="inputContainer">
 						<div className="buttonContainer">
-							<Button
-								variant="outlined"
-								size="small"
+							<Button variant="outlined" size="small"
 								onClick={this.handleDeletePictureclick}>
 								<DeleteIcon/></Button>
-							<Button
-								variant="outlined"
-								size="small"
+							<Button variant="outlined" size="small"
 								onClick={this.handleNewPictureClick}>
 								<AddIcon/></Button>
 						</div>
