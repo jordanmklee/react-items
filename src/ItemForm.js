@@ -2,7 +2,6 @@ import React from "react";
 
 import Paper from '@material-ui/core/Paper';
 import Container from '@material-ui/core/Container';
-
 import TextField from '@material-ui/core/TextField';
 import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from '@material-ui/core/FormControl';
@@ -44,25 +43,40 @@ class ItemForm extends React.Component{
 		selectedFileName: "",
 	}
 
+
+
+	// Updates filename and file in state based on form input
 	handleChooseFile = (event) => {
 		this.setState({	selectedFile: event.target.files[0],
 						selectedFileName: event.target.value })
 	}
 	
+	
+	
+	// Updates name in state to name TextField value
 	handleNameChange = (event) => {
 		this.setState({ name: event.target.value })
 	}
 
+
+
+	// Updates recordStatusId in state to recordStatusId dropdown value
 	handleRecordStatusIdChange = (event) => {
 		console.log(event)
 		this.setState({ recordStatusId: event.target.value })
 	}
 	
+
+
+	// Updates currentIndex to index of picture shown in carousel
 	handlePictureChange = (newIndex) => {
-        console.log(newIndex)
 		this.setState({ currentIndex: newIndex})
 	}
 
+
+
+	// Deletes currently shown picture in carousel
+	// TODO Locally
 	handleDeletePictureclick = (event) => {
 		let currentId = this.state.pictures[this.state.currentIndex].id;
 		
@@ -81,6 +95,9 @@ class ItemForm extends React.Component{
 		this.setState({ pictures: statePictures })
 	}
 
+
+
+	// Adds new picture to item
 	handleNewPictureClick = (event) => {
 		/*
 		Main = true (replaces the main picture in grid, works!)
@@ -95,7 +112,7 @@ class ItemForm extends React.Component{
 		var data = new FormData();
 		data.append('Id', 0);
 		data.append('ItemId', this.state.id);
-		data.append('Main', true);
+		data.append('Main', false);
 		data.append('CreatedBy', 1);
 		data.append("FileUrl", this.state.selectedFile)
 
@@ -130,26 +147,36 @@ class ItemForm extends React.Component{
 		*/
 	}
 
+
+
+	// Saves current item via API
 	handleSaveClick = (event) => {
-		// TODO Save added images?
 		let newItem = {
 			Content: "[{"
-					+ "Id:" + this.state.id + "," 
-					+ "Name:'" + this.state.name + "',"
-					+ "RecordStatusId:" + this.state.recordStatusId + ","
-					+ "CreatedBy:" + this.state.createdBy + ","
-					+ "ModifiedBy:1},]"	// TODO Hardcoded
+			+ "Id:" + this.state.id + "," 
+			+ "Name:'" + this.state.name + "',"
+			+ "RecordStatusId:" + this.state.recordStatusId + ","
+			+ "CreatedBy:" + this.state.createdBy + ","
+			+ "ModifiedBy:1},]"	// TODO Hardcoded
 		}
 		
 		let config = { "Content-Type": "application/json" }
-
+		
 		console.log(newItem)
 		axios.post(API_SAVE_ITEMS, newItem, config)
-			.then(res => {
-				console.log(res);
-			})
+		.then(res => {
+			console.log(res);
+		})
 
+
+
+		// TODO Save added images?
+		// TODO Delete any
+		// TODO Redirect to grid
 	}
+
+
+
 
 	componentDidMount(){
 		// Load Record Status dropdown values via API
@@ -184,6 +211,9 @@ class ItemForm extends React.Component{
 			})
 	}
 	
+
+
+
 	render(){
 		const settings = {
 			infinite: false,
