@@ -29,6 +29,8 @@ const API_GET_RECORD_STATUS_LIST = "https://bimiscwebapi-test.azurewebsites.net/
 const API_DELETE_ITEM = "https://bimiscwebapi-test.azurewebsites.net/api/misc/deleteitem/";
 const API_SAVE_ITEMS = "https://bimiscwebapi-test.azurewebsites.net/api/misc/saveitems/";
 
+
+
 class Grid extends React.Component{
 	state = {
 		items: [],
@@ -43,6 +45,8 @@ class Grid extends React.Component{
 		allSelected: false,
 		recordStatusList: [],
 	}
+
+
 
 	// Update grid items via API
 	updateGrid(){
@@ -75,12 +79,17 @@ class Grid extends React.Component{
 			})
 	}
 
+
+
+	// Updates grid to show only searched items
 	handleSearchChange = (event) => {
 		this.setState({ searchTerm: event.target.value })
 		this.updateGrid()
 	}
 
-	// Delete selected items
+
+
+	// Deletes all items that are selected
 	handleDeleteClick = (event) => {
 		let notSelected = [];
 		this.state.items.forEach((item) => {
@@ -98,13 +107,18 @@ class Grid extends React.Component{
 		this.setState({ deleteMode: false, allSelected: false })
 	}
 
+
+
+	// Toggles editMode
+	// editMode = true;		API saves all items that have been edited
+	// editMode = false;	Turns on editMode, name becomes textField and recordStatus becomes dropdown
 	handleEditClick = (event) => {
-		// Save
+		// Save changed items
 		if(this.state.editMode){
 			// Only need to POST edited items
 			this.state.items.forEach((item) => {
 				if(item.beenEdited){
-					console.log(item.id)
+
 					let newItem = {
 						Content: "[{"
 						+ "Id:" + item.id + "," 
@@ -124,15 +138,15 @@ class Grid extends React.Component{
 			})
 		}
 
-		this.setState({ editMode: !this.state.editMode })
+		this.setState({ editMode: !this.state.editMode })	// Toggle
 	}
 
-	handleSelectAllClick = (event) => {
-		// Set all items' isSelected field to header checkbox value
+
+
+	// Set all items' isSelected field to header checkbox value
+	handleSelectAllClick = (event) => { 
 		let stateItems = [...this.state.items];
-		stateItems.forEach((item) => {
-			item.isSelected = event.target.checked;
-		})
+		stateItems.forEach((item) => {	item.isSelected = event.target.checked;	})
 
 		// deleteMode will always be enabled when all are selected; and vice-versa
 		this.setState({ items: stateItems,
@@ -140,6 +154,9 @@ class Grid extends React.Component{
 						deleteMode: event.target.checked	})
 	}
 
+
+
+	// Updates isSelected status for item (and changes deleteMode contextually)
 	handleSelectClick = (clickedItem) => {
 		let newDeleteMode = false;
 		
@@ -154,6 +171,9 @@ class Grid extends React.Component{
 		this.setState({ items: stateItems, deleteMode: newDeleteMode })
 	}
 
+
+
+	// Updates name for item in state based on TextField value
 	handleNameChange = (changedItem, newValue) => {
 		let stateItems = [...this.state.items];
 		
@@ -166,6 +186,9 @@ class Grid extends React.Component{
 		this.setState({ items: stateItems });
 	}
 
+
+
+	// Updates recordStatusId for item in state based on dropdown value
 	handleRecordStatusIdChange = (changedItem, newValue) => {
 		let stateItems = [...this.state.items];
 
@@ -178,12 +201,18 @@ class Grid extends React.Component{
 		this.setState({ items: stateItems });
 	}
 
+
+
+	// Changes pageNum in state and redraws grid items
 	handleChangePage = (event, newPage) => {
 		this.setState({ pageNum: (newPage + 1) }, () => {
 			this.updateGrid()
 		})
 	}
 
+
+
+	// Changes numItemsPerPage in state and redraws grid items
 	handleChangeRowsPerPage = (newRowsPerPage) => {
 		this.setState({ numItemsPerPage: newRowsPerPage.target.value,
 						pageNum: 1 }, () => {
@@ -191,9 +220,11 @@ class Grid extends React.Component{
 		})
 	}
 
+
+
 	componentDidMount(){
-		// Load Record Status dropdown values via API
 		// TODO Combine this with the one in ItemForm.js?
+		// Load Record Status dropdown values via API
 		axios.get(API_GET_RECORD_STATUS_LIST)
 		.then(res => {
 			this.setState({	recordStatusList: res.data.data })
@@ -202,6 +233,8 @@ class Grid extends React.Component{
 		// Populate grid with items
 		this.updateGrid();
 	}
+
+
 
 	render(){
 		return(
@@ -217,6 +250,7 @@ class Grid extends React.Component{
 				<Container style={{paddingBottom: "100px"}}>
 					<TableContainer component={Paper}>
 						<Table>
+
 							<TableHead>
 								<TableRow>
 									<TableCell>
@@ -261,6 +295,7 @@ class Grid extends React.Component{
 									/>
 								</TableRow>
 							</TableFooter>
+
 						</Table>
 					</TableContainer>
 				</Container>
@@ -268,6 +303,10 @@ class Grid extends React.Component{
 		)
 	}
 }
+
+
+
+
 
 class GridItem extends React.Component{
 	getRecordStatusName = (id) => {
@@ -279,64 +318,79 @@ class GridItem extends React.Component{
 		return <TableCell>{name}</TableCell>
 	}
 	
+
+
 	onSelectClick = () => {
 		this.props.onSelectClick(this.props.item);
 	}
+
+
 
 	handleNameChange = (event) => {
 		this.props.onNameChange(this.props.item, event.target.value)
 	}
 	
+
+
 	handleRecordStatusIdChange = (event) => {
 		this.props.onRecordStatusIdChange(this.props.item, event.target.value)
 	}
 
+
+
 	render(){
 		return(
-				<TableRow key={this.props.item.id}>
-					<TableCell>
-						<Checkbox checked={this.props.item.isSelected} onClick={this.onSelectClick}/>
-					</TableCell>
-					<TableCell>
-						<Link to={{	pathname: "/form",
-									state: {id: this.props.item.id}	}}>
-							<Button variant="contained"><CreateIcon/></Button>
-						</Link>
-					</TableCell>
-					<TableCell>{this.props.item.id}</TableCell>
-					{(this.props.item.thumbImageUrl !== "")
-						?	(<TableCell><img className="thumbnail" src={this.props.item.thumbImageUrl} alt=""/></TableCell>)
-						:	(<TableCell><img className="thumbnailPlaceholder" alt=""/></TableCell>)}
+			<TableRow key={this.props.item.id}>
 					
-					{(this.props.editMode)
-						?	(<TableCell>
-								<TextField variant="outlined" value={this.props.item.name} onChange={this.handleNameChange}/>
-							</TableCell>)
-						:	(<TableCell>{this.props.item.name}</TableCell>)}
-					
-					{(this.props.editMode)
-						?	(<TableCell>
-								<Select
-									variant="outlined"
-									fullWidth 
-									value={this.props.item.recordStatusId}
-									onChange={this.handleRecordStatusIdChange}>
-									
-									{/* Populate dropdown with API values */}
-									{ this.props.recordStatusList.map((status) => (
-										<MenuItem key={status.id} value={status.id}>{status.name}</MenuItem>
-									)) }
-								</Select>
-							</TableCell>)
-						:	(this.getRecordStatusName(this.props.item.recordStatusId))}
-					
-					<TableCell>{this.props.item.createdByUser}</TableCell>
-					<TableCell>{this.props.item.modifiedByUser}</TableCell>
-					<TableCell>{this.props.item.dateCreated}</TableCell>
-					<TableCell>{this.props.item.dateModified}</TableCell>
-				</TableRow>
-				)
-		
+				<TableCell>
+					<Checkbox checked={this.props.item.isSelected} onClick={this.onSelectClick}/>
+				</TableCell>
+				
+				<TableCell>
+					<Link to={{	pathname: "/form",
+								state: {id: this.props.item.id}	}}>
+						<Button variant="contained"><CreateIcon/></Button>
+					</Link>
+				</TableCell>
+				
+				<TableCell>{this.props.item.id}</TableCell>
+				
+				{(this.props.item.thumbImageUrl !== "")
+					?	(<TableCell><img className="thumbnail" src={this.props.item.thumbImageUrl} alt=""/></TableCell>)
+					:	(<TableCell><img className="thumbnailPlaceholder" alt=""/></TableCell>)}
+				
+				{(this.props.editMode)
+					?	(<TableCell>
+							<TextField variant="outlined" value={this.props.item.name} onChange={this.handleNameChange}/>
+						</TableCell>)
+					:	(<TableCell>{this.props.item.name}</TableCell>)}
+				
+				{(this.props.editMode)
+					?	(<TableCell>
+							<Select
+								variant="outlined"
+								fullWidth 
+								value={this.props.item.recordStatusId}
+								onChange={this.handleRecordStatusIdChange}>
+								
+								{/* Populate dropdown with API values */}
+								{ this.props.recordStatusList.map((status) => (
+									<MenuItem key={status.id} value={status.id}>{status.name}</MenuItem>
+								)) }
+							</Select>
+						</TableCell>)
+					:	(this.getRecordStatusName(this.props.item.recordStatusId))}
+				
+				<TableCell>{this.props.item.createdByUser}</TableCell>
+				
+				<TableCell>{this.props.item.modifiedByUser}</TableCell>
+				
+				<TableCell>{this.props.item.dateCreated}</TableCell>
+				
+				<TableCell>{this.props.item.dateModified}</TableCell>
+			
+			</TableRow>
+		)
 	}
 }
 
