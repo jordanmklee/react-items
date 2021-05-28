@@ -16,6 +16,8 @@ import Slider from "react-slick";
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from '@material-ui/icons/Add';
 
+import FormData from "form-data";
+
 import { Link } from "react-router-dom";
 
 import axios from "axios";
@@ -23,7 +25,7 @@ const API_GET_RECORD_STATUS_LIST = "https://bimiscwebapi-test.azurewebsites.net/
 const API_GET_ITEM = "https://bimiscwebapi-test.azurewebsites.net/api/misc/getitem/";
 const API_GET_ITEM_PICTURES = "https://bimiscwebapi-test.azurewebsites.net/api/misc/getitempictures/";
 const API_SAVE_ITEMS = "https://bimiscwebapi-test.azurewebsites.net/api/misc/saveitems/";
-//const API_SAVE_ITEM_PICTURE = "https://bimiscwebapi-test.azurewebsites.net/api/misc/saveitempicture/";
+const API_SAVE_ITEM_PICTURE = "https://bimiscwebapi-test.azurewebsites.net/api/misc/saveitempicture/";
 //const API_DELETE_ITEM_PICTURE = "https://bimiscwebapi-test.azurewebsites.net/api/misc/deleteitempicture/";
 
 class ItemForm extends React.Component{
@@ -37,6 +39,14 @@ class ItemForm extends React.Component{
 		
 		pictures: [],
 		currentIndex: 0,
+
+		selectedFile: "",
+		selectedFileName: "",
+	}
+
+	handleChooseFile = (event) => {
+		this.setState({	selectedFile: event.target.files[0],
+						selectedFileName: event.target.value })
 	}
 	
 	handleNameChange = (event) => {
@@ -63,27 +73,52 @@ class ItemForm extends React.Component{
 	}
 
 	handleNewPictureClick = (event) => {
-		let statePictures = [...this.state.pictures]
+		/*
+		Main = true (replaces the main picture in grid, works!)
+
+		Main = false (responds with a 201 Created) :
+			{	data: "1039",
+				message: "OK",
+				status: true}	)
+
+		Neither true or false updates the array returned by getItemPictures
+		*/
+		var data = new FormData();
+		data.append('Id', 0);
+		data.append('ItemId', this.state.id);
+		data.append('Main', true);
+		data.append('CreatedBy', 1);
+		data.append("FileUrl", this.state.selectedFile)
+
+		let config = {
+			"Accept": "application/json",
+			"Content-Type": "multipart/form-data",
+		}
+
+		axios.post(API_SAVE_ITEM_PICTURE, data, config)
+			.then(res => {
+				console.log(res)
+			})
+
+
+
+
+
+
+
 		// TODO 
-		/* statePictures.push({
+		/*
+		let statePictures = [...this.state.pictures]
+		statePictures.push({
 			id: 0,
 			imageUrl: "",
 			thumbImageUrl: "",
 		})
-		*/
-
-		// TODO Call API to add new picture
-		/*
-			Id
-			ItemId
-			FileUrl
-			Main
-			CreatedBy
-		*/
 		
 		console.log(statePictures)
 
 		this.setState({ pictures: statePictures })
+		*/
 	}
 
 	handleSaveClick = (event) => {
@@ -120,6 +155,8 @@ class ItemForm extends React.Component{
 						axios.get(API_GET_ITEM_PICTURES + this.props.location.state.id)
 					])
 					.then(axios.spread((itemRes, pictureRes) => {
+						//console.log("Number of images: " + pictureRes.data.data.length)	// TODO remove this
+
 						// Parse picture response into array of URL/thumbnail URLs
 						let imgs = [];
 						pictureRes.data.data.forEach((img) => {
@@ -200,6 +237,16 @@ class ItemForm extends React.Component{
 						</div>
 					</div>
 
+
+					<div>
+						<form>
+							<input
+								type="file"
+								value={this.state.selectedFileName}
+								onChange={this.handleChooseFile}/>
+						</form>
+
+					</div>
 
 
 					<div className="inputContainer">
