@@ -26,7 +26,7 @@ const API_GET_ITEM = "https://bimiscwebapi-test.azurewebsites.net/api/misc/getit
 const API_GET_ITEM_PICTURES = "https://bimiscwebapi-test.azurewebsites.net/api/misc/getitempictures/";
 const API_SAVE_ITEMS = "https://bimiscwebapi-test.azurewebsites.net/api/misc/saveitems/";
 const API_SAVE_ITEM_PICTURE = "https://bimiscwebapi-test.azurewebsites.net/api/misc/saveitempicture/";
-//const API_DELETE_ITEM_PICTURE = "https://bimiscwebapi-test.azurewebsites.net/api/misc/deleteitempicture/";
+const API_DELETE_ITEM_PICTURE = "https://bimiscwebapi-test.azurewebsites.net/api/misc/deleteitempicture/";
 
 class ItemForm extends React.Component{
 	state = {
@@ -64,11 +64,20 @@ class ItemForm extends React.Component{
 	}
 
 	handleDeletePictureclick = (event) => {
+		let currentId = this.state.pictures[this.state.currentIndex].id;
+		
+		axios.delete(API_DELETE_ITEM_PICTURE
+			+ currentId + "/"		// image id
+			+ this.state.id + "/"	// itemId
+			+ "1/")					// userId (hardcoded = 1)
+			.then(res => {
+				console.log(res)
+			})
+
+		// Update local state
+		// TODO Would be better to pull from API again
 		let statePictures = [...this.state.pictures]
 		statePictures.splice(this.state.currentIndex, 1);
-
-		// TODO Call API to delete picture
-
 		this.setState({ pictures: statePictures })
 	}
 
