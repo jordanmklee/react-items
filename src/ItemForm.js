@@ -99,7 +99,8 @@ class ItemForm extends React.Component{
 
 	// Adds new picture to item
 	handleNewPictureClick = (event) => {
-		/*
+		/* TODO Not uploading to server array?
+		
 		Main = true (replaces the main picture in grid, works!)
 
 		Main = false (responds with a 201 Created) :
@@ -109,30 +110,32 @@ class ItemForm extends React.Component{
 
 		Neither true or false updates the array returned by getItemPictures
 		*/
-		var data = new FormData();
-		data.append('Id', 0);
-		data.append('ItemId', this.state.id);
-		data.append('Main', false);
-		data.append('CreatedBy', 1);
-		data.append("FileUrl", this.state.selectedFile)
 
-		let config = {
-			"Accept": "application/json",
-			"Content-Type": "multipart/form-data",
+		// Only attempts to API Add file if there is a file selected
+		if(this.state.selectedFile !== ""){
+			var data = new FormData();
+			data.append('Id', 0);
+			data.append('ItemId', this.state.id);
+			data.append('Main', false);
+			data.append('CreatedBy', 1);
+			data.append("FileUrl", this.state.selectedFile)
+	
+			let config = {
+				"Accept": "application/json",
+				"Content-Type": "multipart/form-data",
+			}
+	
+			axios.post(API_SAVE_ITEM_PICTURE, data, config)
+				.then(res => {
+					console.log(res)
+				})
 		}
 
-		axios.post(API_SAVE_ITEM_PICTURE, data, config)
-			.then(res => {
-				console.log(res)
-			})
 
 
 
 
-
-
-
-		// TODO 
+		// TODO add locally
 		/*
 		let statePictures = [...this.state.pictures]
 		statePictures.push({
@@ -151,6 +154,7 @@ class ItemForm extends React.Component{
 
 	// Saves current item via API
 	handleSaveClick = (event) => {
+		// Save item details
 		let newItem = {
 			Content: "[{"
 			+ "Id:" + this.state.id + "," 
@@ -168,10 +172,6 @@ class ItemForm extends React.Component{
 			console.log(res);
 		})
 
-
-
-		// TODO Save added images?
-		// TODO Delete any
 		// TODO Redirect to grid
 	}
 
@@ -185,13 +185,13 @@ class ItemForm extends React.Component{
 				this.setState({	recordStatusList: res.data.data })
 
 				// If editing, load existing values and pictures for item too
-				if(this.props.location.state.id !== 0){
+				if(this.state.id !== 0){
 					axios.all([
-						axios.get(API_GET_ITEM + this.props.location.state.id),
-						axios.get(API_GET_ITEM_PICTURES + this.props.location.state.id)
+						axios.get(API_GET_ITEM + this.state.id),
+						axios.get(API_GET_ITEM_PICTURES + this.state.id)
 					])
 					.then(axios.spread((itemRes, pictureRes) => {
-						//console.log("Number of images: " + pictureRes.data.data.length)	// TODO remove this
+						console.log(pictureRes.data.data)	// TODO remove this
 
 						// Parse picture response into array of URL/thumbnail URLs
 						let imgs = [];
