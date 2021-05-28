@@ -35,6 +35,8 @@ class ItemForm extends React.Component{
 		name: "",
 		recordStatusId: "",
 		createdBy: "",
+
+		emptyFields: false,
 		
 		pictures: [],
 		currentIndex: 0,
@@ -76,7 +78,6 @@ class ItemForm extends React.Component{
 
 
 	// Deletes currently shown picture in carousel
-	// TODO Locally
 	handleDeletePictureclick = (event) => {
 		let currentId = this.state.pictures[this.state.currentIndex].id;
 		
@@ -100,7 +101,7 @@ class ItemForm extends React.Component{
 	// Adds new picture to item
 	handleNewPictureClick = (event) => {
 		/* TODO Not uploading to server array?
-		
+
 		Main = true (replaces the main picture in grid, works!)
 
 		Main = false (responds with a 201 Created) :
@@ -135,7 +136,7 @@ class ItemForm extends React.Component{
 
 
 
-		// TODO add locally
+		// TODO add locally for display
 		/*
 		let statePictures = [...this.state.pictures]
 		statePictures.push({
@@ -154,25 +155,29 @@ class ItemForm extends React.Component{
 
 	// Saves current item via API
 	handleSaveClick = (event) => {
-		// Save item details
-		let newItem = {
-			Content: "[{"
-			+ "Id:" + this.state.id + "," 
-			+ "Name:'" + this.state.name + "',"
-			+ "RecordStatusId:" + this.state.recordStatusId + ","
-			+ "CreatedBy:" + this.state.createdBy + ","
-			+ "ModifiedBy:1},]"	// TODO Hardcoded
+		if(this.state.name === "" || this.state.recordStatusId === ""){
+			this.setState({ emptyFields: true})
 		}
-		
-		let config = { "Content-Type": "application/json" }
-		
-		console.log(newItem)
-		axios.post(API_SAVE_ITEMS, newItem, config)
-		.then(res => {
-			console.log(res);
-		})
-
-		// TODO Redirect to grid
+		else{
+			// Save item details
+			let newItem = {
+				Content: "[{"
+				+ "Id:" + this.state.id + "," 
+				+ "Name:'" + this.state.name + "',"
+				+ "RecordStatusId:" + this.state.recordStatusId + ","
+				+ "CreatedBy:" + this.state.createdBy + ","
+				+ "ModifiedBy:1},]"	// TODO Hardcoded
+			}
+			
+			let config = { "Content-Type": "application/json" }
+			
+			axios.post(API_SAVE_ITEMS, newItem, config)
+			.then(res => {
+				console.log(res);
+			})
+	
+			// TODO Redirect to grid
+		}
 	}
 
 
@@ -234,7 +239,8 @@ class ItemForm extends React.Component{
 						
 
 					<div className="inputContainer">
-						<TextField label="Name" variant="outlined" fullWidth
+						<TextField label="Name" variant="outlined" fullWidth required
+						error={this.state.emptyFields}
 							value={this.state.name}
 							onChange={this.handleNameChange}>
 						</TextField>
@@ -243,7 +249,8 @@ class ItemForm extends React.Component{
 
 
 					<div className="inputContainer">
-						<FormControl variant="outlined" fullWidth>
+						<FormControl variant="outlined" fullWidth required
+							error={this.state.emptyFields}>
 							<InputLabel>Record Status</InputLabel>
 							<Select label="Record Status" variant="outlined" fullWidth
 								value={this.state.recordStatusId}
@@ -287,7 +294,6 @@ class ItemForm extends React.Component{
 								value={this.state.selectedFileName}
 								onChange={this.handleChooseFile}/>
 						</form>
-
 					</div>
 
 
