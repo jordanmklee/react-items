@@ -102,25 +102,13 @@ class ItemForm extends React.Component{
 
 	// Adds new picture to item
 	handleNewPictureClick = (event) => {
-		/* TODO Not uploading to server array?
-
-		Main = true (replaces the main picture in grid, works!)
-
-		Main = false (responds with a 201 Created) :
-			{	data: "1039",
-				message: "OK",
-				status: true}	)
-
-		Neither true or false updates the array returned by getItemPictures
-		*/
-
 		// Only attempts to API Add file if there is a file selected
 		if(this.state.selectedFile !== ""){
 			var data = new FormData();
 			data.append('Id', 0);
 			data.append('ItemId', this.state.id);
 			data.append('Main', false);
-			data.append('CreatedBy', 1);
+			data.append('ModifiedBy', 1);
 			data.append("FileUrl", this.state.selectedFile)
 	
 			let config = {
@@ -133,8 +121,6 @@ class ItemForm extends React.Component{
 					console.log(res)
 				})
 		}
-
-
 
 
 
@@ -167,7 +153,7 @@ class ItemForm extends React.Component{
 				+ "Id:" + this.state.id + "," 
 				+ "Name:'" + this.state.name + "',"
 				+ "RecordStatusId:" + this.state.recordStatusId + ","
-				+ "CreatedBy:" + this.state.createdBy + ","
+				+ "CreatedBy:1,"	// TODO Harcoded
 				+ "ModifiedBy:1},]"	// TODO Hardcoded
 			}
 			
@@ -199,7 +185,7 @@ class ItemForm extends React.Component{
 						axios.get(API_GET_ITEM_PICTURES + this.state.id)
 					])
 					.then(axios.spread((itemRes, pictureRes) => {
-						//console.log(pictureRes.data.data)	// TODO remove this
+						console.log(pictureRes.data.data)	// TODO remove this
 
 						// Parse picture response into array of URL/thumbnail URLs
 						let imgs = [];
