@@ -6,10 +6,10 @@ import Container from '@material-ui/core/Container';
 import TextField from '@material-ui/core/TextField';
 import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from '@material-ui/core/FormControl';
-//import FormHelperText from '@material-ui/core/FormHelperText';
 import Select from "@material-ui/core/Select";
 import MenuItem from '@material-ui/core/MenuItem';
 import Button from "@material-ui/core/Button";
+import Checkbox from '@material-ui/core/Checkbox';
 
 import Slider from "react-slick";
 
@@ -43,13 +43,18 @@ class ItemForm extends React.Component{
 		
 		pictures: [],
 		currentIndex: 0,
-		mainPictureIndex: "",
 
 		selectedFile: "",
 		selectedFileName: "",
+		setAsMain: false,
 	}
 
 
+
+	// Toggles state variable for new picture to be thumbnail
+	handleSetMainClick = (event) => {
+		this.setState({ setAsMain: !this.state.setAsMain })
+	}
 
 	// Updates filename and file in state based on form input
 	handleChooseFile = (event) => {
@@ -103,7 +108,7 @@ class ItemForm extends React.Component{
 			var data = new FormData();
 			data.append('Id', 0);
 			data.append('ItemId', this.state.id);
-			data.append('Main', false);
+			data.append('Main', this.state.setAsMain);
 			data.append('ModifiedBy', this.state.modifiedBy);
 			data.append("FileUrl", this.state.selectedFile)
 	
@@ -117,8 +122,6 @@ class ItemForm extends React.Component{
 					this.updateCarousel();		// Update carousel after adding
 				})
 		}
-
-		// TODO Set main picture
 	}
 
 
@@ -259,16 +262,20 @@ class ItemForm extends React.Component{
 					</div>
 
 
+					{/* File Browser for new picture */}
 					<div>
 						<form>
 							<input
 								type="file"
 								value={this.state.selectedFileName}
 								onChange={this.handleChooseFile}/>
+								
 						</form>
+						<p>Set as Main<Checkbox checked={this.state.setAsMain} onChange={this.handleSetMainClick}/></p>
 					</div>
 
 
+					{/* Back/Save Buttons */}
 					<div className="inputContainer">
 						<div className="buttonContainer">
 							<Button variant="outlined" size="small"
