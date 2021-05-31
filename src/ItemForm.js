@@ -87,16 +87,11 @@ class ItemForm extends React.Component{
 		axios.delete(API_DELETE_ITEM_PICTURE
 			+ currentId + "/"		// image id
 			+ this.state.id + "/"	// itemId
-			+ "1/")					// userId (hardcoded = 1)
+			+ "1/")					// userId (TODO hardcoded = 1)
 			.then(res => {
 				console.log(res)
+				this.updateCarousel();
 			})
-
-		// Update local state
-		// TODO Would be better to pull from API again
-		let statePictures = [...this.state.pictures]
-		statePictures.splice(this.state.currentIndex, 1);
-		this.setState({ pictures: statePictures })
 	}
 
 
@@ -119,25 +114,11 @@ class ItemForm extends React.Component{
 	
 			axios.post(API_SAVE_ITEM_PICTURE, data, config)
 				.then(res => {
-					console.log(res)
+					this.updateCarousel();		// Update carousel after adding
 				})
 		}
 
-		// TODO Set main
-
-		// TODO add locally for display
-		/*
-		let statePictures = [...this.state.pictures]
-		statePictures.push({
-			id: 0,
-			imageUrl: "",
-			thumbImageUrl: "",
-		})
-		
-		console.log(statePictures)
-
-		this.setState({ pictures: statePictures })
-		*/
+		// TODO Set main picture
 	}
 
 
@@ -172,6 +153,15 @@ class ItemForm extends React.Component{
 
 
 
+	// Retrieves pictures for item from API, and displays them on carousel
+	updateCarousel = () => {
+		axios.get(API_GET_ITEM_PICTURES + this.state.id)
+			.then(res => {
+				this.setState({ pictures: res.data.data})
+			})
+	}
+
+
 
 	componentDidMount(){
 		// Load Record Status dropdown values via API
@@ -181,25 +171,14 @@ class ItemForm extends React.Component{
 
 				// If editing, load existing values and pictures for item too
 				if(this.state.id !== 0){
-					axios.all([
-						axios.get(API_GET_ITEM + this.state.id),
-						axios.get(API_GET_ITEM_PICTURES + this.state.id)
-					])
-					.then(axios.spread((itemRes, pictureRes) => {
-						// Parse picture response into array of URL/thumbnail URLs
-						let imgs = [];
-						pictureRes.data.data.forEach((img) => {
-							imgs.push({	id: img.id,
-										imageUrl: img.imageUrl,
-										thumbImageUrl: img.thumbImageUrl	})
-						})
-
-						this.setState({	name: itemRes.data.data.name,
-										recordStatusId: itemRes.data.data.recordStatusId,
-										createdBy: itemRes.data.data.createdBy,				// Load original creator
-			
-										pictures: imgs })
-					}))
+					axios.get(API_GET_ITEM + this.state.id)
+					.then(res => {
+						this.setState({	name: res.data.data.name,
+										recordStatusId: res.data.data.recordStatusId,
+										createdBy: res.data.data.createdBy	})			// Load original creator
+						
+						this.updateCarousel();
+					})
 				}
 			})
 	}
