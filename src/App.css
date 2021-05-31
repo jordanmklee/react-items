@@ -22,6 +22,10 @@ img.thumbnailPlaceholder{
 	background-color: rgb(221, 221, 221);
 }
 
+.gridContainer{
+	padding-bottom: 200px;
+}
+
 .formContainer{
 	margin: auto;
 	padding: 25px;

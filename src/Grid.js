@@ -246,8 +246,7 @@ class Grid extends React.Component{
 					handleDeleteClick={this.handleDeleteClick}
 					handleEditClick={this.handleEditClick}/>
 
-				{/* TODO Hardcoded padding for bottom */}
-				<Container style={{paddingBottom: "100px"}}>
+				<Container className="gridContainer">
 					<TableContainer component={Paper}>
 						<Table>
 

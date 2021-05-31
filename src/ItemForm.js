@@ -1,4 +1,5 @@
 import React from "react";
+import { Redirect } from 'react-router'
 
 import Paper from '@material-ui/core/Paper';
 import Container from '@material-ui/core/Container';
@@ -29,6 +30,8 @@ const API_DELETE_ITEM_PICTURE = "https://bimiscwebapi-test.azurewebsites.net/api
 
 class ItemForm extends React.Component{
 	state = {
+		redirectToGrid: false,
+
 		recordStatusList: [],
 		
 		id: this.props.location.state.id,
@@ -64,7 +67,6 @@ class ItemForm extends React.Component{
 
 	// Updates recordStatusId in state to recordStatusId dropdown value
 	handleRecordStatusIdChange = (event) => {
-		console.log(event)
 		this.setState({ recordStatusId: event.target.value })
 	}
 	
@@ -176,7 +178,8 @@ class ItemForm extends React.Component{
 				console.log(res);
 			})
 	
-			// TODO Redirect to grid
+			// Redirect to grid
+			this.setState({ redirectToGrid: true });
 		}
 	}
 
@@ -196,7 +199,7 @@ class ItemForm extends React.Component{
 						axios.get(API_GET_ITEM_PICTURES + this.state.id)
 					])
 					.then(axios.spread((itemRes, pictureRes) => {
-						console.log(pictureRes.data.data)	// TODO remove this
+						//console.log(pictureRes.data.data)	// TODO remove this
 
 						// Parse picture response into array of URL/thumbnail URLs
 						let imgs = [];
@@ -224,6 +227,10 @@ class ItemForm extends React.Component{
 			infinite: false,
 			slidesToShow: 1,
 			slidesToScroll: 1,
+		}
+		
+		if(this.state.redirectToGrid){
+			return <Redirect to="/"/>
 		}
 
 		return(
