@@ -31,18 +31,19 @@ const API_DELETE_ITEM_PICTURE = "https://bimiscwebapi-test.azurewebsites.net/api
 class ItemForm extends React.Component{
 	state = {
 		redirectToGrid: false,
+		emptyFields: false,
 
 		recordStatusList: [],
 		
 		id: this.props.location.state.id,
 		name: "",
 		recordStatusId: "",
-		createdBy: "",
-
-		emptyFields: false,
+		createdBy: 1,		// TODO Harcoded; new items are created by current user (user 1); otherwise loaded from edited item
+		modifiedBy: 1,		// TODO Harcoded; modified by current user (user 1)
 		
 		pictures: [],
 		currentIndex: 0,
+		mainPictureIndex: "",
 
 		selectedFile: "",
 		selectedFileName: "",
@@ -108,7 +109,7 @@ class ItemForm extends React.Component{
 			data.append('Id', 0);
 			data.append('ItemId', this.state.id);
 			data.append('Main', false);
-			data.append('ModifiedBy', 1);
+			data.append('ModifiedBy', this.state.modifiedBy);
 			data.append("FileUrl", this.state.selectedFile)
 	
 			let config = {
@@ -122,7 +123,7 @@ class ItemForm extends React.Component{
 				})
 		}
 
-
+		// TODO Set main
 
 		// TODO add locally for display
 		/*
@@ -153,8 +154,8 @@ class ItemForm extends React.Component{
 				+ "Id:" + this.state.id + "," 
 				+ "Name:'" + this.state.name + "',"
 				+ "RecordStatusId:" + this.state.recordStatusId + ","
-				+ "CreatedBy:1,"	// TODO Harcoded
-				+ "ModifiedBy:1},]"	// TODO Hardcoded
+				+ "CreatedBy:" + this.state.createdBy + ","
+				+ "ModifiedBy:" + this.state.modifiedBy + "},]"
 			}
 			
 			let config = { "Content-Type": "application/json" }
@@ -163,7 +164,7 @@ class ItemForm extends React.Component{
 			.then(res => {
 				console.log(res);
 			})
-	
+
 			// Redirect to grid
 			this.setState({ redirectToGrid: true });
 		}
@@ -185,8 +186,6 @@ class ItemForm extends React.Component{
 						axios.get(API_GET_ITEM_PICTURES + this.state.id)
 					])
 					.then(axios.spread((itemRes, pictureRes) => {
-						console.log(pictureRes.data.data)	// TODO remove this
-
 						// Parse picture response into array of URL/thumbnail URLs
 						let imgs = [];
 						pictureRes.data.data.forEach((img) => {
@@ -197,7 +196,7 @@ class ItemForm extends React.Component{
 
 						this.setState({	name: itemRes.data.data.name,
 										recordStatusId: itemRes.data.data.recordStatusId,
-										createdBy: itemRes.data.data.createdBy,
+										createdBy: itemRes.data.data.createdBy,				// Load original creator
 			
 										pictures: imgs })
 					}))
@@ -215,6 +214,7 @@ class ItemForm extends React.Component{
 			slidesToScroll: 1,
 		}
 		
+		// TODO pagination count doesn't update on save
 		if(this.state.redirectToGrid){
 			return <Redirect to="/"/>
 		}
