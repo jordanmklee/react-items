@@ -120,6 +120,11 @@ class ItemForm extends React.Component{
 			axios.post(API_SAVE_ITEM_PICTURE, data, config)
 				.then(res => {
 					this.updateCarousel();		// Update carousel after adding
+					
+					// Reset input fields for next picture
+					this.setState({ selectedFile: "",
+									selectedFileName: "",
+									setAsMain: false  })
 				})
 		}
 	}
@@ -244,7 +249,17 @@ class ItemForm extends React.Component{
 
 					{/* Carousel */}
 					<div style={{ paddingTop: "50px" }}>
-						<div style={{ margin: "auto", textAlign: "center", width: "90%" }}>
+						<div style={{ margin: "auto", paddingBottom: "50px"}}>
+							{this.state.pictures.map((image) => (
+								<img className="thumbnail"
+									key={image.id}
+									src={image.thumbImageUrl}
+									alt=""
+									/>
+							))}
+						</div>
+						
+						<div style={{ margin: "auto", textAlign: "center", width: "90%", paddingBottom: "50px"}}>
 							<Slider {...settings}
 								afterChange={this.handlePictureChange}>
 
