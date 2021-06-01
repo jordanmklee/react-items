@@ -10,7 +10,7 @@ import { Link } from "react-router-dom";
 class GridButtons extends React.Component{
 	render(){
 		return(
-			<Container style={{paddingBottom: "15px"}}>
+			<Container className="paperContainer">
 				<Paper style={{ overflow: "hidden", padding: "10px" }}>
 					
 					<div style={{float: "left"}}>

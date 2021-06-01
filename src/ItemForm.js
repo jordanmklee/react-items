@@ -207,7 +207,7 @@ class ItemForm extends React.Component{
 		}
 
 		return(
-			<Container><Paper>
+			<Container className="paperContainer"><Paper>
 				<div className="formContainer">
 					{(this.state.id !== 0)
 					?	(<>

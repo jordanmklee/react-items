@@ -246,7 +246,7 @@ class Grid extends React.Component{
 					handleDeleteClick={this.handleDeleteClick}
 					handleEditClick={this.handleEditClick}/>
 
-				<Container className="gridContainer">
+				<Container className="paperContainer">
 					<TableContainer component={Paper}>
 						<Table>
 
