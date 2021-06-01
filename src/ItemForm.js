@@ -250,17 +250,18 @@ class ItemForm extends React.Component{
 					{/* Carousel */}
 					<div style={{ paddingTop: "50px" }}>
 						<div style={{ margin: "auto", paddingBottom: "50px"}}>
-							{this.state.pictures.map((image) => (
-								<img className="thumbnail"
+							{this.state.pictures.map((image, index) => (
+								<img className="thumbnail" style={{ paddingLeft: "10px"}}
+									onClick={e => this.slider.slickGoTo(e.target.dataset.index)}
 									key={image.id}
 									src={image.thumbImageUrl}
 									alt=""
-									/>
+									data-index={index}/>
 							))}
 						</div>
-						
+
 						<div style={{ margin: "auto", textAlign: "center", width: "90%", paddingBottom: "50px"}}>
-							<Slider {...settings}
+							<Slider ref={slider => (this.slider = slider)} {...settings}
 								afterChange={this.handlePictureChange}>
 
 							{this.state.pictures.map((image) => (
