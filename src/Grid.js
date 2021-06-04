@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import GridButtons from "./GridButtons"
 
 import Paper from '@material-ui/core/Paper';
@@ -57,7 +57,7 @@ class Grid extends React.Component{
 				var newTotalNumItems = parseInt(res.data.message);
 				var newItemsState = [];
 				res.data.data.forEach((item) => {
-					newItemsState.push({                         
+					newItemsState.push({
 						id: item.id,
 						name: item.name,
 						createdBy: item.createdBy,
@@ -313,95 +313,91 @@ class Grid extends React.Component{
 
 
 
-class GridItem extends React.Component{
-	getRecordStatusName = (id) => {
+function GridItem(props){
+	const getRecordStatusName = ((id) => {
 		let name = ""
-		this.props.recordStatusList.forEach((status) => {
+		props.recordStatusList.forEach((status) => {
 			if(status.id === id)
 				name = status.name
 		})
 		return <TableCell>{name}</TableCell>
+	})
+	
+
+
+	const onSelectClick = () => {
+		props.onSelectClick(props.item);
+	}
+
+
+
+	const handleNameChange = (event) => {
+		props.onNameChange(props.item, event.target.value)
 	}
 	
 
 
-	onSelectClick = () => {
-		this.props.onSelectClick(this.props.item);
+	const handleRecordStatusIdChange = (event) => {
+		props.onRecordStatusIdChange(props.item, event.target.value)
 	}
 
 
 
-	handleNameChange = (event) => {
-		this.props.onNameChange(this.props.item, event.target.value)
-	}
-	
-
-
-	handleRecordStatusIdChange = (event) => {
-		this.props.onRecordStatusIdChange(this.props.item, event.target.value)
-	}
-
-
-
-	render(){
-		return(
-			<TableRow key={this.props.item.id}>
-					
-				<TableCell>
-					<Checkbox
-						checked={this.props.item.isSelected}
-						onClick={this.onSelectClick}/>
-				</TableCell>
+	return(
+		<TableRow key={props.item.id}>
 				
-				<TableCell>
-					<Link to={{	pathname: "/items/form",
-								state: {id: this.props.item.id}	}}>
-						<Button variant="contained"><CreateIcon/></Button>
-					</Link>
-				</TableCell>
-				
-				<TableCell>{this.props.item.id}</TableCell>
-				
-				{(this.props.item.thumbImageUrl !== "")
-					?	(<TableCell><img className="thumbnail" src={this.props.item.thumbImageUrl} alt=""/></TableCell>)
-					:	(<TableCell><img className="thumbnailPlaceholder" alt=""/></TableCell>)}
-				
-				{(this.props.editMode)
-					?	(<TableCell>
-							<TextField variant="outlined"
-								value={this.props.item.name}
-								onChange={this.handleNameChange}/>
-						</TableCell>)
-					:	(<TableCell>{this.props.item.name}</TableCell>)}
-				
-				{(this.props.editMode)
-					?	(<TableCell>
-							<Select variant="outlined" fullWidth 
-								value={this.props.item.recordStatusId}
-								onChange={this.handleRecordStatusIdChange}>
-								
-								{/* Populate dropdown with API values */}
-								{ this.props.recordStatusList.map((status) => (
-									<MenuItem key={status.id}
-										value={status.id}>
-										{status.name}
-									</MenuItem>
-								)) }
-							</Select>
-						</TableCell>)
-					:	(this.getRecordStatusName(this.props.item.recordStatusId))}
-				
-				<TableCell>{this.props.item.createdByUser}</TableCell>
-				
-				<TableCell>{this.props.item.modifiedByUser}</TableCell>
-				
-				<TableCell>{this.props.item.dateCreated}</TableCell>
-				
-				<TableCell>{this.props.item.dateModified}</TableCell>
+			<TableCell>
+				<Checkbox
+					checked={props.item.isSelected}
+					onClick={onSelectClick}/>
+			</TableCell>
 			
-			</TableRow>
-		)
-	}
+			<TableCell>
+				<Link to={{	pathname: "/items/form",
+							state: {id: props.item.id}	}}>
+					<Button variant="contained"><CreateIcon/></Button>
+				</Link>
+			</TableCell>
+			
+			<TableCell>{props.item.id}</TableCell>
+			
+			{(props.item.thumbImageUrl !== "")
+				?	(<TableCell><img className="thumbnail" src={props.item.thumbImageUrl} alt=""/></TableCell>)
+				:	(<TableCell><img className="thumbnailPlaceholder" alt=""/></TableCell>)}
+			
+			{(props.editMode)
+				?	(<TableCell>
+						<TextField variant="outlined"
+							value={props.item.name}
+							onChange={handleNameChange}/>
+					</TableCell>)
+				:	(<TableCell>{props.item.name}</TableCell>)}
+			
+			{(props.editMode)
+				?	(<TableCell>
+						<Select variant="outlined" fullWidth 
+							value={props.item.recordStatusId}
+							onChange={handleRecordStatusIdChange}>
+							
+							{/* Populate dropdown with API values */}
+							{ props.recordStatusList.map((status) => (
+								<MenuItem key={status.id}
+									value={status.id}>
+									{status.name}
+								</MenuItem>
+							)) }
+						</Select>
+					</TableCell>)
+				:	(getRecordStatusName(props.item.recordStatusId))}
+			
+			<TableCell>{props.item.createdByUser}</TableCell>
+			<TableCell>{props.item.modifiedByUser}</TableCell>
+			<TableCell>{props.item.dateCreated}</TableCell>
+			<TableCell>{props.item.dateModified}</TableCell>
+		
+		</TableRow>
+	)
+	
 }
 
 export default Grid;
