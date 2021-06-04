@@ -63,6 +63,17 @@ class ItemForm extends React.Component{
 	}
 	
 	
+
+	// TODO Use this for all changes?
+	/*
+	const handleOnChange = e => {
+		setFormValues({
+		...formValues,
+		[e.target.name]: e.target.value
+		});
+	};
+	*/
+
 	
 	// Updates name in state to name TextField value
 	handleNameChange = (event) => {
@@ -203,7 +214,7 @@ class ItemForm extends React.Component{
 		
 		// TODO pagination count doesn't update on save
 		if(this.state.redirectToGrid){
-			return <Redirect to="/"/>
+			return <Redirect to="/items"/>
 		}
 
 		return(
@@ -307,7 +318,7 @@ class ItemForm extends React.Component{
 
 					<div className="inputContainer" style={{ paddingTop: "50px"}}>
 						<div className="buttonContainer">
-							<Link to="/">
+							<Link to="/items">
 								<Button
 									variant="contained"
 									size="large">

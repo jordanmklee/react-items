@@ -239,6 +239,10 @@ class Grid extends React.Component{
 	render(){
 		return(
 			<div>
+				<Container>
+					<h1>Items</h1>
+				</Container>
+
 				<GridButtons
 					deleteMode={this.state.deleteMode}
 					editMode={this.state.editMode}
@@ -350,7 +354,7 @@ class GridItem extends React.Component{
 				</TableCell>
 				
 				<TableCell>
-					<Link to={{	pathname: "/form",
+					<Link to={{	pathname: "/items/form",
 								state: {id: this.props.item.id}	}}>
 						<Button variant="contained"><CreateIcon/></Button>
 					</Link>

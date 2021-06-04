@@ -21,7 +21,7 @@ class GridButtons extends React.Component{
 					<div className="buttonContainer" style={{float: "right"}}>
 						{(!this.props.editMode)
 							?	(<Link to={{
-									pathname: "/form",
+									pathname: "/items/form",
 									state: { id: 0 } }}>
 									<Button variant="contained" color="primary" size="large">
 										Add
